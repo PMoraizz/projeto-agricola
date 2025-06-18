@@ -9,6 +9,56 @@ html(lang="pt-BR")
     link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
+    
+    //- ADIÇÃO 1: CSS para estilizar a nova seção de filtros
+    style.
+      .filter-section {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-bottom: 1px solid #dee2e6;
+      }
+      .filter-form .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .filter-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 6px;
+      }
+      .input-with-icon {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 0 8px;
+      }
+      .input-with-icon .material-symbols-outlined {
+        color: #6c757d;
+        font-size: 20px;
+      }
+      .input-with-icon input, .input-with-icon select {
+        flex-grow: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 10px 8px;
+        font-size: 16px;
+      }
+      .filter-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
   body
     header.app-header
       span.material-symbols-outlined.icon-button menu
@@ -16,9 +66,45 @@ html(lang="pt-BR")
       div
         span.material-symbols-outlined.icon-button search
         span.material-symbols-outlined.icon-button refresh
+
     main.container.with-header-and-footer
+      //- ADIÇÃO 2: A seção completa de filtros
+      section.filter-section
+        form.filter-form#filter-form
+          .form-grid
+            .filter-group
+              label(for="filter-text") Pesquisar
+              .input-with-icon
+                span.material-symbols-outlined search
+                input#filter-text(type="text", placeholder="Nome do serviço...")
+            
+            .filter-group
+              label(for="filter-servico") Tipo de Serviço
+              .input-with-icon
+                span.material-symbols-outlined construction
+                select#filter-servico
+                  option(value="") Todos
+                  option(value="roçada") Roçada
+                  option(value="microterraceamento") Microterraceamento
+                  option(value="pulverização") Pulverização
+
+            .filter-group
+              label(for="filter-data-inicio") Período de
+              .input-with-icon
+                span.material-symbols-outlined calendar_today
+                input#filter-data-inicio(type="date")
+
+            .filter-group
+              label(for="filter-data-fim") Até
+              .input-with-icon
+                span.material-symbols-outlined event
+                input#filter-data-fim(type="date")
+
+          .filter-actions
+            button.btn.btn-secondary(type="button", id="clear-filters-btn") Limpar
+            button.btn.btn-primary(type="submit") Aplicar Filtros
+
       .service-list
-        // Estes são os cartões de serviço estáticos que serão substituídos pelo JS
         .service-card
           h3 Roçada
           p 5/11/2024
@@ -34,8 +120,12 @@ html(lang="pt-BR")
         .service-card
           h3 Pulverização Nutricional + Fungicida + Inseticida
           p 21/10/2024
+          
+    //- O botão flutuante original foi mantido
     a.fab(href="adicionar-servico")
       span.material-symbols-outlined add
+      
+    //- O menu de navegação inferior original foi totalmente mantido
     footer.bottom-nav
       a.nav-item(href="#")
         span.material-symbols-outlined shopping_cart
@@ -49,52 +139,49 @@ html(lang="pt-BR")
       a.nav-item(href="#")
         span.material-symbols-outlined settings
         span.nav-label Secagem
-    //- script.
-    //-   document.addEventListener('DOMContentLoaded', async () => {
-    //-     const token = localStorage.getItem('authToken');
-    //-     if (!token) {
-    //-       window.location.href = '/login'; // Se não tiver token, volta para o login
-    //-       return;
-    //-     }
 
-    //-     try {
-    //-       const response = await fetch('/api/servicos', {
-    //-         headers: { 'Authorization': `Bearer ${token}` }
-    //-       });
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('filter-form');
+        const clearBtn = document.getElementById('clear-filters-btn');
+        const serviceCards = document.querySelectorAll('.service-list .service-card');
+        
+        function parseDate(dateString) {
+          const [day, month, year] = dateString.split('/').map(Number);
+          return new Date(year, month - 1, day);
+        }
 
-    //-       if (response.status === 401) { // Token expirado/inválido
-    //-         localStorage.removeItem('authToken');
-    //-         window.location.href = '/login';
-    //-         return;
-    //-       }
+        function aplicarFiltros() {
+          const textoFiltro = document.getElementById('filter-text').value.toLowerCase();
+          const servicoFiltro = document.getElementById('filter-servico').value.toLowerCase();
+          const dataInicioFiltro = document.getElementById('filter-data-inicio').value;
+          const dataFimFiltro = document.getElementById('filter-data-fim').value;
+          const dataInicio = dataInicioFiltro ? new Date(dataInicioFiltro) : null;
+          const dataFim = dataFimFiltro ? new Date(dataFimFiltro) : null;
 
-    //-       if (!response.ok) throw new Error('Falha ao buscar serviços');
+          serviceCards.forEach(card => {
+            const nomeServico = card.querySelector('h3').textContent.toLowerCase();
+            const dataServicoTexto = card.querySelector('p').textContent;
+            const dataServico = parseDate(dataServicoTexto);
+            const passouTexto = !textoFiltro || nomeServico.includes(textoFiltro);
+            const passouServico = !servicoFiltro || nomeServico.includes(servicoFiltro);
+            const passouDataInicio = !dataInicio || dataServico >= dataInicio;
+            const passouDataFim = !dataFim || dataServico <= dataFim;
+            if (passouTexto && passouServico && passouDataInicio && passouDataFim) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        }
 
-    //-       const services = await response.json();
-    //-       const serviceListContainer = document.querySelector('.service-list');
-    //-       serviceListContainer.innerHTML = ''; // Limpa a lista estática
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          aplicarFiltros();
+        });
 
-    //-       if (services.length === 0) {
-    //-         serviceListContainer.innerHTML = '<p style="text-align: center; padding: 20px;">Nenhum serviço cadastrado.</p>';
-    //-       } else {
-    //-         services.forEach(service => {
-    //-           const card = document.createElement('div');
-    //-           card.className = 'service-card';
-
-    //-           // Formata a data para o padrão brasileiro
-    //-           const formattedDate = new Date(service.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-
-    //-           card.innerHTML = `
-    //-           <h3>${service.servico}</h3>
-    //-           <p>${formattedDate}</p>
-    //-           `;
-    //-           serviceListContainer.appendChild(card);
-    //-         });
-    //-       }
-    //-     } catch (error) {
-    //-       console.error('Erro:', error);
-    //-       alert('Sessão expirada. Faça login novamente.');
-    //-       localStorage.removeItem('authToken');
-    //-       window.location.href = '/login';
-    //-     }
-    //-   });
+        clearBtn.addEventListener('click', () => {
+          form.reset();
+          aplicarFiltros();
+        });
+      });
