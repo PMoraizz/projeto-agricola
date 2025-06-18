@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: todo-app
+    working_dir: /app
+    volumes:
+      - .:/app               # volume vinculado ao diretório local
+      - /app/node_modules    # evita conflito com node_modules local
+    ports:
+      - "3311:3000"
+    environment:
+      - NODE_ENV=development

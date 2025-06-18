@@ -1,4 +1,26 @@
 extends layout
 
 block content
-  p Bem-vindo!
+  h1= title
+  p Welcome to #{title}
+
+  input#task-input(type="text", placeholder="Digite sua tarefa")
+  button#add-task Adicionar
+
+  ul#task-list
+
+  script.
+    const input = document.getElementById('task-input');
+    const button = document.getElementById('add-task');
+    const list = document.getElementById('task-list');
+
+    button.addEventListener('click', () => {
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      const item = document.createElement('li');
+      item.textContent = texto;
+      item.className = 'task-item';
+      list.appendChild(item);
+      input.value = '';
+    });
