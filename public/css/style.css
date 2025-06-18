@@ -4,8 +4,10 @@
 
 /* Definindo as cores do seu guia de marca para fácil acesso */
 :root {
-    --cor-verde-claro-bg: #f0f4f0; /* Um verde bem claro para o fundo */
-    --cor-verde-escuro-emater: #384d1a; /* Verde escuro do logo */
+    --cor-verde-claro-bg: #f0f4f0;
+    /* Um verde bem claro para o fundo */
+    --cor-verde-escuro-emater: #384d1a;
+    /* Verde escuro do logo */
     --cor-texto-principal: #333;
     --cor-branca: #ffffff;
 }
@@ -29,7 +31,8 @@ body {
  * ------------------- */
 .container {
     width: 100%;
-    max-width: 400px; /* Limita a largura em telas grandes */
+    max-width: 400px;
+    /* Limita a largura em telas grandes */
     margin: 0 auto;
     padding: 20px;
 }
@@ -39,7 +42,8 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ocupa a altura total da tela */
+    height: 100vh;
+    /* Ocupa a altura total da tela */
     text-align: center;
 }
 
@@ -48,13 +52,16 @@ body {
  * ------------------- */
 
 .welcome-logo {
-    max-width: 200px; /* Define um tamanho máximo para o logo */
+    max-width: 200px;
+    /* Define um tamanho máximo para o logo */
     width: 100%;
-    margin-bottom: 100px; /* Espaço entre o logo e o botão */
+    margin-bottom: 100px;
+    /* Espaço entre o logo e o botão */
 }
 
 .welcome-logo-icon {
-    max-width: 200px; /* Define um tamanho máximo para o logo */
+    max-width: 200px;
+    /* Define um tamanho máximo para o logo */
     width: 100%;
 }
 
@@ -78,7 +85,8 @@ body {
 
 .btn-primary:hover {
     /* Efeito para quando o mouse passa por cima (em desktops) */
-    background-color: #4a6822; /* Um pouco mais claro que o verde principal */
+    background-color: #4a6822;
+    /* Um pouco mais claro que o verde principal */
     transform: translateY(-2px);
 }
 
@@ -92,14 +100,16 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Garante que ocupe a tela toda */
+    min-height: 100vh;
+    /* Garante que ocupe a tela toda */
     text-align: center;
 }
 
 .login-logo {
     max-width: 150px;
     width: 100%;
-    margin-bottom: 40px; /* Espaço entre o logo e o título */
+    margin-bottom: 40px;
+    /* Espaço entre o logo e o título */
 }
 
 .form-title {
@@ -132,7 +142,8 @@ body {
 
 .btn-full-width {
     width: 100%;
-    margin-top: 10px; /* Espaço acima do botão */
+    margin-top: 10px;
+    /* Espaço acima do botão */
 }
 
 .forgot-password-link {
@@ -150,16 +161,20 @@ body {
  * Estilos Globais do App
  * ------------------- */
 body {
-    padding-bottom: 80px; /* Espaço para o menu de navegação fixo */
+    padding-bottom: 80px;
+    /* Espaço para o menu de navegação fixo */
 }
 
 .container.with-header {
-    padding-top: 80px; /* Espaço para o header fixo */
+    padding-top: 80px;
+    /* Espaço para o header fixo */
 }
 
 .container.with-header-and-footer {
-    padding-top: 80px; /* Espaço para o header */
-    padding-bottom: 90px; /* Espaço para a navegação */
+    padding-top: 80px;
+    /* Espaço para o header */
+    padding-bottom: 90px;
+    /* Espaço para a navegação */
 }
 
 .app-header {
@@ -186,6 +201,7 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
+
 .icon-button .material-symbols-outlined {
     vertical-align: middle;
 }
@@ -218,17 +234,19 @@ body {
 
 .fab {
     position: fixed;
-    bottom: 95px; /* Posição acima do menu de navegação */
+    bottom: 95px;
+    /* Posição acima do menu de navegação */
     right: 20px;
     width: 56px;
     height: 56px;
-    background-color: var(--cor-verde-escuro-emater); /* Cor do botão principal */
+    background-color: var(--cor-verde-escuro-emater);
+    /* Cor do botão principal */
     color: var(--cor-branca);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-decoration: none;
     z-index: 10;
 }
@@ -266,7 +284,8 @@ body {
 }
 
 .nav-item.active {
-    color: var(--cor-verde-escuro-emater); /* Cor para o item ativo */
+    color: var(--cor-verde-escuro-emater);
+    /* Cor para o item ativo */
 }
 
 /* -------------------
@@ -275,7 +294,7 @@ body {
 .add-service-form {
     width: 100%;
 }
- 
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -310,6 +329,7 @@ select.form-input {
     border-radius: 0;
     z-index: 1;
 }
+
 .stepper-input:focus {
     z-index: 2;
 }
@@ -324,9 +344,11 @@ select.form-input {
     cursor: pointer;
     z-index: 1;
 }
+
 .stepper-btn:first-child {
     border-radius: 8px 0 0 8px;
 }
+
 .stepper-btn:last-child {
     border-radius: 0 8px 8px 0;
 }
@@ -340,7 +362,8 @@ select.form-input {
 }
 
 .form-actions .btn {
-    flex: 1; /* Faz os botões ocuparem o mesmo espaço */
+    flex: 1;
+    /* Faz os botões ocuparem o mesmo espaço */
 }
 
 .btn-secondary {
@@ -356,4 +379,109 @@ select.form-input {
     border: none;
     border-top: 1px solid #eee;
     margin: 30px 0;
+}
+
+/* MUDANÇA: Estilos para o botão de alternância do filtro */
+.filter-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.filter-toggle .material-symbols-outlined {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.filter-toggle.open .material-symbols-outlined {
+    transform: rotate(180deg);
+}
+
+/* MUDANÇA: Estilos para esconder/mostrar a seção de filtro com transição */
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    margin-top: -21px;
+    margin-bottom: 20px;
+    /* Compensa a margem do botão */
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    max-height: 1000px;
+    /* Altura suficiente para o conteúdo */
+    opacity: 1;
+}
+
+.filter-section.hidden {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    border: none;
+}
+
+/* Estilos existentes do seu filtro */
+.filter-form .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 6px;
+    margin-top: 10px;
+}
+
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0 8px;
+    margin-bottom: 5px;
+}
+
+.input-with-icon .material-symbols-outlined {
+    color: #6c757d;
+    font-size: 20px;
+}
+
+
+.input-with-icon input,
+.input-with-icon select {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px 8px;
+    font-size: 16px;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 20px;
 }
