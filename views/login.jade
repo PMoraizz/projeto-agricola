@@ -1,0 +1,62 @@
+doctype html
+html(lang="pt-br")
+  head
+    meta(charset="UTF-8")
+    title Login
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: 300px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="password"] {
+        width: 95%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        width: 101%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+  body
+    .login-container
+      h1 Login
+      form(method="POST")
+        label(for="usuario") Usuário:
+        input#usuario(type="text", name="usuario", required)
+        
+        label(for="senha") Senha:
+        input#senha(type="password", name="senha", required)
+        
+        button#entrar(type="button" onclick="window.location.href='/'") Entrar
