@@ -1,26 +1,42 @@
-extends layout
+doctype html
+html(lang="pt-BR")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Bem-vindo - EMATER
+    link(rel="stylesheet", href="css/style.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
+  body
+    .container.welcome-container
+      img.welcome-logo-icon(src="assets/logo-emater.svg", alt="Logo da EMATER Minas Gerais")
+      img.welcome-logo(src="assets/img_Emater.svg", alt="Logo da EMATER Minas Gerais")
+      a.btn.btn-primary(href="login") Iniciar Sessão
+    script.
+      const form = document.querySelector('.login-form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
 
-block content
-  h1= title
-  p Welcome to #{title}
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
 
-  input#task-input(type="text", placeholder="Digite sua tarefa")
-  button#add-task Adicionar
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Falha no login');
+          }
 
-  ul#task-list
+          const { token } = await response.json();
+          localStorage.setItem('authToken', token); 
+          window.location.href = '/servicos.jade';
 
-  script.
-    const input = document.getElementById('task-input');
-    const button = document.getElementById('add-task');
-    const list = document.getElementById('task-list');
-
-    button.addEventListener('click', () => {
-      const texto = input.value.trim();
-      if (!texto) return;
-
-      const item = document.createElement('li');
-      item.textContent = texto;
-      item.className = 'task-item';
-      list.appendChild(item);
-      input.value = '';
-    });
+        } catch (error) {
+          alert(`Erro: ${error.message}`);
+        }
+      });

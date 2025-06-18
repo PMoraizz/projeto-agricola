@@ -1,0 +1,100 @@
+doctype html
+html(lang="pt-BR")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Serviços - EMATER
+    link(rel="stylesheet", href="css/style.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
+  body
+    header.app-header
+      span.material-symbols-outlined.icon-button menu
+      img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER")
+      div
+        span.material-symbols-outlined.icon-button search
+        span.material-symbols-outlined.icon-button refresh
+    main.container.with-header-and-footer
+      .service-list
+        // Estes são os cartões de serviço estáticos que serão substituídos pelo JS
+        .service-card
+          h3 Roçada
+          p 5/11/2024
+        .service-card
+          h3 Roçada
+          p 7/10/2024
+        .service-card
+          h3 Roçada
+          p 8/10/2024
+        .service-card
+          h3 Microterraceamento
+          p 10/10/2024
+        .service-card
+          h3 Pulverização Nutricional + Fungicida + Inseticida
+          p 21/10/2024
+    a.fab(href="adicionar-servico")
+      span.material-symbols-outlined add
+    footer.bottom-nav
+      a.nav-item(href="#")
+        span.material-symbols-outlined shopping_cart
+        span.nav-label Compras
+      a.nav-item.active(href="#")
+        span.material-symbols-outlined construction
+        span.nav-label Serviços
+      a.nav-item(href="#")
+        span.material-symbols-outlined grass
+        span.nav-label Colheita
+      a.nav-item(href="#")
+        span.material-symbols-outlined settings
+        span.nav-label Secagem
+    //- script.
+    //-   document.addEventListener('DOMContentLoaded', async () => {
+    //-     const token = localStorage.getItem('authToken');
+    //-     if (!token) {
+    //-       window.location.href = '/login'; // Se não tiver token, volta para o login
+    //-       return;
+    //-     }
+
+    //-     try {
+    //-       const response = await fetch('/api/servicos', {
+    //-         headers: { 'Authorization': `Bearer ${token}` }
+    //-       });
+
+    //-       if (response.status === 401) { // Token expirado/inválido
+    //-         localStorage.removeItem('authToken');
+    //-         window.location.href = '/login';
+    //-         return;
+    //-       }
+
+    //-       if (!response.ok) throw new Error('Falha ao buscar serviços');
+
+    //-       const services = await response.json();
+    //-       const serviceListContainer = document.querySelector('.service-list');
+    //-       serviceListContainer.innerHTML = ''; // Limpa a lista estática
+
+    //-       if (services.length === 0) {
+    //-         serviceListContainer.innerHTML = '<p style="text-align: center; padding: 20px;">Nenhum serviço cadastrado.</p>';
+    //-       } else {
+    //-         services.forEach(service => {
+    //-           const card = document.createElement('div');
+    //-           card.className = 'service-card';
+
+    //-           // Formata a data para o padrão brasileiro
+    //-           const formattedDate = new Date(service.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+
+    //-           card.innerHTML = `
+    //-           <h3>${service.servico}</h3>
+    //-           <p>${formattedDate}</p>
+    //-           `;
+    //-           serviceListContainer.appendChild(card);
+    //-         });
+    //-       }
+    //-     } catch (error) {
+    //-       console.error('Erro:', error);
+    //-       alert('Sessão expirada. Faça login novamente.');
+    //-       localStorage.removeItem('authToken');
+    //-       window.location.href = '/login';
+    //-     }
+    //-   });

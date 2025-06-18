@@ -1,0 +1,89 @@
+doctype html
+html(lang="pt-BR")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Adicionar Serviço - EMATER
+    link(rel="stylesheet", href="css/style.css")
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
+  body
+    header.app-header
+      a.icon-button(href="servicos")
+        span.material-symbols-outlined arrow_back
+      img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER")
+      div(style="width: 40px;")
+    main.container.with-header
+      form.add-service-form(method="POST", action="/adicionar-servico")
+        .form-group
+          label(for="data") Data*
+          input.form-input(type="date", id="data", name="data", value="2025-05-14")
+        .form-group
+          label(for="talhao") Talhão*
+          select.form-input(id="talhao", name="talhao")
+            option(value="") Selecione o talhão
+            option(value="1") Talhão 1
+            option(value="2") Talhão 2
+            option(value="sede") Sede
+        .form-group
+          label(for="servico") Serviço*
+          select.form-input(id="servico", name="servico")
+            option(value="") Selecione o serviço
+            option(value="rocada") Roçada
+            option(value="adubacao") Adubação
+            option(value="pulverizacao") Pulverização
+            option(value="capina") Capina
+        .form-group
+          label(for="num_servicos") Nº de Serviços*
+          .input-stepper
+            button.stepper-btn(type="button", data-action="decrement") -
+            input.form-input.stepper-input(type="number", id="num_servicos", name="num_servicos", value="0", step="1")
+            button.stepper-btn(type="button", data-action="increment") +
+        .form-group
+          label(for="valor_servico") Valor do Serviço-R$*
+          .input-stepper
+            button.stepper-btn(type="button", data-action="decrement") -
+            input.form-input.stepper-input(type="number", id="valor_servico", name="valor_servico", value="0.00", step="0.01")
+            button.stepper-btn(type="button", data-action="increment") +
+        hr.form-divider
+        .form-group
+          label(for="nome_produto") Nome do produto
+          input.form-input(type="text", id="nome_produto", name="nome_produto", placeholder="Ex: Calcário, 18-04-17")
+        .form-group
+          label(for="qtde_produto") Quantidade produto
+          .input-stepper
+            button.stepper-btn(type="button", data-action="decrement") -
+            input.form-input.stepper-input(type="number", id="qtde_produto", name="qtde_produto", value="0.00", step="0.01")
+            button.stepper-btn(type="button", data-action="increment") +
+        .form-group
+          label(for="unidade_produto") Unidade
+          select.form-input(id="unidade_produto", name="unidade_produto")
+            option(value="") Selecione a unidade
+            option(value="kg") Kg
+            option(value="litro") Litro
+            option(value="unidade") Unidade
+            option(value="hd") hd (homem-dia)
+        .form-group
+          label(for="trabalhador") Nome do(s) trabalhador(es) / operador(es)*
+          input.form-input(type="text", id="trabalhador", name="trabalhador", placeholder="Ex: Célio Miguel da Silva")
+        .form-actions
+          a.btn.btn-secondary(href="servicos") Cancelar
+          button.btn.btn-primary(type="submit") Salvar
+    script.
+      document.addEventListener('click', function (e) {
+        if (e.target.matches('.stepper-btn')) {
+          const action = e.target.dataset.action;
+          const input = e.target.parentElement.querySelector('.stepper-input');
+          const step = parseFloat(input.step) || 1;
+          let value = parseFloat(input.value) || 0;
+          if (action === 'increment') {
+            value += step;
+          } else if (action === 'decrement') {
+            const min = parseFloat(input.min) || 0;
+            if (value > min) { value -= step; }
+          }
+          input.value = (step < 1) ? value.toFixed(2) : value;
+        }
+      });
