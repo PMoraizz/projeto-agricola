@@ -23,14 +23,14 @@ html(lang="pt-BR")
         .form-group
           label(for="talhao") Talhão*
           select.form-input(id="talhao", name="talhao")
-            option(value="") Selecione o talhão
+            option(value="invalido" disabled selected) Selecione o talhão
             option(value="1") Talhão 1
             option(value="2") Talhão 2
             option(value="sede") Sede
         .form-group
           label(for="servico") Serviço*
           select.form-input(id="servico", name="servico")
-            option(value="") Selecione o serviço
+            option(value="invalido" disabled selected) Selecione o serviço
             option(value="rocada") Roçada
             option(value="adubacao") Adubação
             option(value="pulverizacao") Pulverização
@@ -39,13 +39,13 @@ html(lang="pt-BR")
           label(for="num_servicos") Nº de Serviços*
           .input-stepper
             button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", id="num_servicos", name="num_servicos", value="0", step="1")
+            input.form-input.stepper-input(type="number", id="num_servicos", name="num_servicos", placeholder="0", step="1", min="0")
             button.stepper-btn(type="button", data-action="increment") +
         .form-group
           label(for="valor_servico") Valor do Serviço-R$*
           .input-stepper
             button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", id="valor_servico", name="valor_servico", value="0.00", step="0.01")
+            input.form-input.stepper-input(type="number", id="valor_servico", name="valor_servico",  step="0.01", min="0.00", placeholder="R$ 0.00")
             button.stepper-btn(type="button", data-action="increment") +
         hr.form-divider
         .form-group
@@ -55,12 +55,12 @@ html(lang="pt-BR")
           label(for="qtde_produto") Quantidade produto
           .input-stepper
             button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", id="qtde_produto", name="qtde_produto", value="0", step="1")
+            input.form-input.stepper-input(type="number", id="qtde_produto", name="qtde_produto", placeholder="0", step="1", min="0")
             button.stepper-btn(type="button", data-action="increment") +
         .form-group
           label(for="unidade_produto") Unidade
-          select.form-input(id="unidade_produto", name="unidade_produto")
-            option(value="") Selecione a unidade
+          select.form-input(id="unidade_produto", name="unidade_produto", placeholder="Selecione a unidade")
+            option(value="invalido" disabled selected) Selecione a unidade
             option(value="kg") Kg
             option(value="litro") Litro
             option(value="unidade") Unidade
