@@ -319,15 +319,18 @@ select.form-input {
 
 .input-stepper {
     display: flex;
-    align-items: stretch; /* Garante que todos os itens tenham a mesma altura */
+    align-items: stretch;
+    /* Garante que todos os itens tenham a mesma altura */
 }
 
 .stepper-input {
     text-align: center;
     border-left: none;
     border-right: none;
-    border-radius: 0; /* Remove as bordas arredondadas do input */
-    flex-grow: 1; /* Faz o input preencher o espaço disponível */
+    border-radius: 0;
+    /* Remove as bordas arredondadas do input */
+    flex-grow: 1;
+    /* Faz o input preencher o espaço disponível */
     z-index: 1;
 }
 
@@ -342,7 +345,8 @@ select.form-input {
     font-weight: bold;
     padding: 0 15px;
     /* Ajustado para corresponder à altura do input */
-    height: 50px; /* Garante a mesma altura que o input, que tem padding de 15px e borda de 1px */
+    height: 50px;
+    /* Garante a mesma altura que o input, que tem padding de 15px e borda de 1px */
     cursor: pointer;
     z-index: 1;
 }
@@ -487,3 +491,170 @@ select.form-input {
     margin-top: 16px;
     margin-bottom: 20px;
 }
+
+.multiselect-container {
+    position: relative;
+}
+
+.select-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: var(--cor-branca);
+    cursor: pointer;
+}
+
+.select-box span.placeholder {
+    color: #999;
+}
+
+.checkboxes-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    background-color: var(--cor-branca);
+    z-index: 20;
+    max-height: 240px;
+    /* Aumentado para dar espaço para a busca */
+    overflow-y: auto;
+}
+
+.checkboxes-container label {
+    display: block;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: normal;
+}
+
+.checkboxes-container label:hover {
+    background-color: var(--cor-verde-claro-bg);
+}
+
+.checkboxes-container input[type="checkbox"] {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.checkboxes-container.show {
+    display: block;
+}
+
+/* NOVOS ESTILOS PARA A BARRA DE PESQUISA */
+.multiselect-search-wrapper {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background-color: var(--cor-branca);
+}
+
+.multiselect-search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.multiselect-search:focus {
+    border-color: var(--cor-verde-escuro-emater);
+}
+
+/* --- ESTILOS PARA CAMPOS REPETÍVEIS (PRODUTOS E TRABALHADORES) --- */
+
+/* Container para a lista de itens (ex: lista de produtos) */
+.repeatable-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaço entre cada item adicionado */
+}
+
+/* Wrapper para cada item individual na lista */
+.repeatable-item {
+  position: relative;
+  background-color: #f8f9fa; /* Um fundo levemente diferente para destacar */
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  padding-top: 15px;
+}
+
+/* Agrupa o cabeçalho do item (título e botão de remover) */
+.repeatable-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.repeatable-item-title {
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--cor-texto-principal);
+}
+
+/* Botão de remover (-) em cada item */
+.remove-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: #e6e6e6;
+  color: var(--cor-texto-principal);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.remove-item-btn:hover {
+  background-color: #d4d4d4;
+}
+
+/* Oculta o botão de remover no primeiro item para evitar que o usuário apague todos */
+.repeatable-list .repeatable-item:first-child .remove-item-btn {
+  display: none;
+}
+
+/* Botão para adicionar um novo item (+ Adicionar) */
+.add-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background-color: transparent;
+  color: var(--cor-verde-escuro-emater);
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-item-btn .material-symbols-outlined {
+  margin-right: 8px;
+  font-size: 22px;
+}
+
+.add-item-btn:hover {
+  background-color: var(--cor-verde-claro-bg);
+  border-color: var(--cor-verde-escuro-emater);
+}
+
