@@ -22,47 +22,49 @@ html(lang="pt-BR")
     main.container.with-header-and-footer
       h2 Detalhes do Serviço
 
-      .detail-section
-        h3 Propriedade
-        p Fazenda Santa Rita
+      //- Novo container para o card único
+      .details-card
+        .detail-section
+          h3 Propriedade
+          p Fazenda Santa Rita
 
-      .form-divider
+        .detail-section
+          h3 Serviço
+          ul.repeatable-list 
+            - var servicos = ['Pulverizacao Nutricional', 'Fungicida', 'Inseticida']
+            each servico in servicos
+              li.repeatable-item
+                span.repeatable-item-text= servico
 
-      .detail-section
-        h3 Serviço
-        p Pulverização Nutricional + Fungicida + Inseticida
+        .detail-section
+          h3 Talhão
+          ul.repeatable-list 
+            - var talhoes = ['Talhao 1', 'Talhao 2']
+            each talhao in talhoes
+              li.repeatable-item
+                span.repeatable-item-text= talhao
 
-      .form-divider
+        .detail-section
+          h3 Data do Serviço
+          p 21/10/2024
+        
+        //- Seção "O que foi feito" foi removida
 
-      .detail-section
-        h3 Talhão
-        p Talhão 03
+        .detail-section
+          h3 Produtos
+          ul.repeatable-list
+            - var produtos = ['Ureia líquida', 'Fungicida XYZ', 'Inseticida ABC']
+            each produto in produtos
+              li.repeatable-item
+                span.repeatable-item-text= produto
 
-      .form-divider
-
-      .detail-section
-        h3 Data 
-        p 21/10/2024
-
-      .form-divider
-
-      .detail-section
-        h3 Produtos
-        ul.repeatable-list
-          - var produtos = ['Ureia líquida', 'Fungicida XYZ', 'Inseticida ABC']
-          each produto in produtos
-            li.repeatable-item
-              span.repeatable-item-title= produto
-
-      .form-divider
-
-      .detail-section
-        h3 Trabalhadores 
-        ul.repeatable-list
-          - var trabalhadores = ['João da Silva', 'Maria Oliveira', 'Carlos Souza']
-          each trabalhador in trabalhadores
-            li.repeatable-item
-              span.repeatable-item-title= trabalhador
+        .detail-section
+          h3 Trabalhadores
+          ul.repeatable-list
+            - var trabalhadores = ['João da Silva', 'Maria Oliveira', 'Carlos Souza']
+            each trabalhador in trabalhadores
+              li.repeatable-item
+                span.repeatable-item-text= trabalhador
 
     footer.bottom-nav
       a.nav-item(href="#")

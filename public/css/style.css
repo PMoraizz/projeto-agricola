@@ -661,54 +661,70 @@ select.form-input {
   border-color: var(--cor-verde-escuro-emater);
 }
 
-/* --- ESTILOS PARA A TELA DE DETALHES DO SERVIÇO --- */
+/* --- ESTILOS PARA A TELA DE DETALHES DO SERVIÇO (Estilo Card Único) --- */
 
 /* Título principal da página de detalhes */
 main > h2 {
   font-size: 22px;
   font-weight: 500;
   color: var(--cor-texto-principal);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
-/* Container para cada seção de informação (ex: Propriedade, Serviço) */
-.detail-section {
+/* Novo container para agrupar todos os detalhes em um único card */
+.details-card {
+  background-color: var(--cor-branca);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+/* Seções de detalhe agora são apenas divisões de conteúdo dentro do card */
+.details-card .detail-section {
   padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0; /* Linha separadora sutil */
+}
+
+/* Remove a borda e o padding inferior da última seção */
+.details-card .detail-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Ajusta o padding da primeira seção para alinhar com o card */
+.details-card .detail-section:first-child {
+  padding-top: 0;
 }
 
 /* Rótulo da informação (H3) */
 .detail-section h3 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
-  color: #666; /* Um cinza para diferenciar do valor */
+  color: #000000;
   margin-bottom: 4px;
-  text-transform: uppercase; /* Deixa o rótulo em maiúsculas */
-  letter-spacing: 0.5px;
 }
 
 /* Valor da informação (P) */
 .detail-section p {
   font-size: 16px;
-  color: var(--cor-texto-principal);
+  font-weight: 500;
 }
 
-/* Adaptação da lista de itens para modo de visualização */
+/* Estilos para as listas dentro dos cards */
 .detail-section .repeatable-list {
-  list-style: none; /* Remove os marcadores de bolinha da lista */
+  list-style: none;
   padding-left: 0;
   margin-top: 8px;
+  color: #413e3e;
 }
 
 .detail-section .repeatable-item {
   background-color: transparent;
   border: none;
-  border-bottom: 1px solid #eee; /* Linha separadora sutil */
-  padding: 12px 4px; /* Espaçamento vertical e um pequeno padding horizontal */
+  padding: 8px 0;
 }
 
-/* Remove a borda do último item da lista */
 .detail-section .repeatable-item:last-child {
-  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .detail-section .repeatable-item-title {
