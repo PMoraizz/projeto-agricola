@@ -215,10 +215,13 @@ body {
     width: 100%;
 }
 
-.service-card {
+.service-list a.service-card { /* Target the <a> tag with the .service-card class */
     background-color: var(--cor-branca);
     padding: 15px;
     border-bottom: 1px solid #eee;
+    text-decoration: none; /* Removes the default underline from links */
+    color: inherit; /* Ensures the text color is inherited, not the default link blue */
+    display: block; /* Make the <a> tag behave like a block-level element */
 }
 
 .service-card h3 {
@@ -658,3 +661,57 @@ select.form-input {
   border-color: var(--cor-verde-escuro-emater);
 }
 
+/* --- ESTILOS PARA A TELA DE DETALHES DO SERVIÇO --- */
+
+/* Título principal da página de detalhes */
+main > h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--cor-texto-principal);
+  margin-bottom: 24px;
+}
+
+/* Container para cada seção de informação (ex: Propriedade, Serviço) */
+.detail-section {
+  padding: 12px 0;
+}
+
+/* Rótulo da informação (H3) */
+.detail-section h3 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666; /* Um cinza para diferenciar do valor */
+  margin-bottom: 4px;
+  text-transform: uppercase; /* Deixa o rótulo em maiúsculas */
+  letter-spacing: 0.5px;
+}
+
+/* Valor da informação (P) */
+.detail-section p {
+  font-size: 16px;
+  color: var(--cor-texto-principal);
+}
+
+/* Adaptação da lista de itens para modo de visualização */
+.detail-section .repeatable-list {
+  list-style: none; /* Remove os marcadores de bolinha da lista */
+  padding-left: 0;
+  margin-top: 8px;
+}
+
+.detail-section .repeatable-item {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #eee; /* Linha separadora sutil */
+  padding: 12px 4px; /* Espaçamento vertical e um pequeno padding horizontal */
+}
+
+/* Remove a borda do último item da lista */
+.detail-section .repeatable-item:last-child {
+  border-bottom: none;
+}
+
+.detail-section .repeatable-item-title {
+  font-size: 16px;
+  color: var(--cor-texto-principal);
+}

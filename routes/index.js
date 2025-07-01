@@ -34,4 +34,8 @@ router.post('/adicionar-servico', authController.isAuthenticated, function(req, 
   res.redirect('/servicos');
 });
 
+router.get('/detalhes', authController.isAuthenticated, function(req, res, next) {
+  res.render('detalhes');
+});
+
 module.exports = router;

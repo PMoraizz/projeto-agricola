@@ -31,7 +31,7 @@ html(lang="pt-BR")
               .input-with-icon
                 span.material-symbols-outlined search
                 input#filter-text(type="text", placeholder="Nome do serviço...")
-            
+              
             //- ===== CAMPO TIPO DE SERVIÇO ATUALIZADO PARA MULTI-SELECT =====
             .filter-group
               label(for="filter-servico") Tipo de Serviço
@@ -65,20 +65,30 @@ html(lang="pt-BR")
             button.btn.btn-primary(type="submit") Aplicar Filtros
 
       .service-list
-        .service-card
-          h3 Roçada
+        a(href="detalhes").service-card
+          h3 Roçada 
+          p Talhao
+          br
           p 05/11/2024
-        .service-card
+        a(href="detalhes").service-card
           h3 Roçada
+          p Talhao
+          br
           p 07/10/2024
-        .service-card
+        a(href="detalhes").service-card
           h3 Roçada
+          p Talhao
+          br
           p 08/10/2024
-        .service-card
+        a(href="detalhes").service-card
           h3 Microterraceamento
+          p Talhao
+          br
           p 10/10/2024
-        .service-card
+        a(href="detalhes").service-card
           h3 Pulverização Nutricional + Fungicida + Inseticida
+          p Talhao
+          br
           p 21/10/2024
         
       a.fab(href="adicionar-servico")

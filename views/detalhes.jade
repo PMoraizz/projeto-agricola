@@ -1,0 +1,79 @@
+doctype html
+html(lang="pt-BR")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Detalhes do Serviço - EMATER
+
+    //- Fontes e CSS
+    link(rel="preconnect", href="https://fonts.googleapis.com")
+    link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
+    link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined")
+    link(rel="stylesheet", href="css/style.css")
+
+  body
+    header.app-header
+      a.icon-button(href="javascript:history.back()")
+        span.material-symbols-outlined arrow_back
+      img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER", onerror="this.onerror=null;this.src='https://placehold.co/150x40/384d1a/ffffff?text=Emater';")
+      div(style="width: 40px")
+
+    main.container.with-header-and-footer
+      h2 Detalhes do Serviço
+
+      .detail-section
+        h3 Propriedade
+        p Fazenda Santa Rita
+
+      .form-divider
+
+      .detail-section
+        h3 Serviço
+        p Pulverização Nutricional + Fungicida + Inseticida
+
+      .form-divider
+
+      .detail-section
+        h3 Talhão
+        p Talhão 03
+
+      .form-divider
+
+      .detail-section
+        h3 Data 
+        p 21/10/2024
+
+      .form-divider
+
+      .detail-section
+        h3 Produtos
+        ul.repeatable-list
+          - var produtos = ['Ureia líquida', 'Fungicida XYZ', 'Inseticida ABC']
+          each produto in produtos
+            li.repeatable-item
+              span.repeatable-item-title= produto
+
+      .form-divider
+
+      .detail-section
+        h3 Trabalhadores 
+        ul.repeatable-list
+          - var trabalhadores = ['João da Silva', 'Maria Oliveira', 'Carlos Souza']
+          each trabalhador in trabalhadores
+            li.repeatable-item
+              span.repeatable-item-title= trabalhador
+
+    footer.bottom-nav
+      a.nav-item(href="#")
+        span.material-symbols-outlined shopping_cart
+        span.nav-label Compras
+      a.nav-item.active(href="#")
+        span.material-symbols-outlined construction
+        span.nav-label Serviços
+      a.nav-item(href="#")
+        span.material-symbols-outlined grass
+        span.nav-label Colheita
+      a.nav-item(href="#")
+        span.material-symbols-outlined settings
+        span.nav-label Secagem
