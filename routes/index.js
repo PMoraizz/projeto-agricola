@@ -17,6 +17,10 @@ router.get('/servicos', authController.isAuthenticated, function(req, res, next)
   res.render('servicos'); 
 });
 
+router.post('/servicos', authController.isAuthenticated, function(req, res, next) {
+  res.render('servicos'); 
+});
+
 
 router.get('/adicionar-servico', authController.isAuthenticated, function(req, res, next) {
   res.render('adicionar-servico');
@@ -36,6 +40,10 @@ router.post('/adicionar-servico', authController.isAuthenticated, function(req, 
 
 router.get('/detalhes', authController.isAuthenticated, function(req, res, next) {
   res.render('detalhes');
+});
+
+router.get('/editar', authController.isAuthenticated, function(req, res, next) {
+  res.render('editar');
 });
 
 module.exports = router;

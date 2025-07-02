@@ -47,8 +47,6 @@ html(lang="pt-BR")
         .detail-section
           h3 Data do Serviço
           p 21/10/2024
-        
-        //- Seção "O que foi feito" foi removida
 
         .detail-section
           h3 Produtos
@@ -65,6 +63,12 @@ html(lang="pt-BR")
             each trabalhador in trabalhadores
               li.repeatable-item
                 span.repeatable-item-text= trabalhador
+
+        .action-buttons
+          a.btn-editar(href="/editar") 
+            span.material-symbols-outlined edit
+          a.btn-excluir(href="/servicos") 
+            span.material-symbols-outlined delete
 
     footer.bottom-nav
       a.nav-item(href="#")
