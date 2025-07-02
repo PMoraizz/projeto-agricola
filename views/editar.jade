@@ -16,13 +16,13 @@ html(lang="pt-BR")
 
   body
     header.app-header
-      a.icon-button(href="servicos")
+      a.icon-button(href="javascript:history.back()")
         span.material-symbols-outlined arrow_back
       img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER", onerror="this.onerror=null;this.src='https://placehold.co/150x40/384d1a/FFFFFF?text=EMATER';")
       div(style="width: 40px;")
 
     main.container.with-header
-      form.edit-service-form(method="POST", action="/servicos")
+      form.edit-service-form(method="POST", action="javascript:history.back()")
         //- Bloco de informações gerais
         .form-group
           label(for="data") Data*
@@ -124,7 +124,7 @@ html(lang="pt-BR")
         hr.form-divider
 
         .form-actions
-          a.btn.btn-secondary(href="servicos") Cancelar
+          a.btn.btn-secondary(href="detalhes") Cancelar
           button.btn.btn-primary(type="submit") Salvar
 
     //- Templates para os novos campos

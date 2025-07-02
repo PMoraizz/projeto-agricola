@@ -25,11 +25,12 @@ html(lang="pt-BR")
       //- Novo container para o card único
       .details-card
         .detail-section
-          h3 Propriedade
+          h2 Propriedade
+          br
           p Fazenda Santa Rita
 
         .detail-section
-          h3 Serviço
+          h2 Serviço
           ul.repeatable-list 
             - var servicos = ['Pulverizacao Nutricional', 'Fungicida', 'Inseticida']
             each servico in servicos
@@ -37,7 +38,7 @@ html(lang="pt-BR")
                 span.repeatable-item-text= servico
 
         .detail-section
-          h3 Talhão
+          h2 Talhão
           ul.repeatable-list 
             - var talhoes = ['Talhao 1', 'Talhao 2']
             each talhao in talhoes
@@ -45,19 +46,23 @@ html(lang="pt-BR")
                 span.repeatable-item-text= talhao
 
         .detail-section
-          h3 Data do Serviço
+          h2 Data do Serviço 
+          br
           p 21/10/2024
 
         .detail-section
-          h3 Produtos
+          h2 Produtos
           ul.repeatable-list
             - var produtos = ['Ureia líquida', 'Fungicida XYZ', 'Inseticida ABC']
             each produto in produtos
               li.repeatable-item
                 span.repeatable-item-text= produto
+                li
+                  p • 5 Kg
+                  p • R$ 10,00
 
         .detail-section
-          h3 Trabalhadores
+          h2 Trabalhadores
           ul.repeatable-list
             - var trabalhadores = ['João da Silva', 'Maria Oliveira', 'Carlos Souza']
             each trabalhador in trabalhadores
