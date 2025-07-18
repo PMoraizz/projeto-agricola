@@ -5,296 +5,161 @@ html(lang="pt-BR")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Adicionar Serviço - EMATER
     
-    //- Fontes e Ícones
     link(rel="preconnect", href="https://fonts.googleapis.com")
     link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
 
-    //- Incluindo o seu CSS existente
-    link(rel="stylesheet", href="css/style.css")
+    link(rel="stylesheet", href="/css/style.css")
 
   body
     header.app-header
-      a.icon-button(href="servicos")
+      a.icon-button(href="/servicos")
         span.material-symbols-outlined arrow_back
-      img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER", onerror="this.onerror=null;this.src='https://placehold.co/150x40/384d1a/FFFFFF?text=EMATER';")
-      div(style="width: 40px;")
+      img.header-logo(src="assets/logo_barra.png", alt="Logo EMATER")
+      div(style="width: 30px;") 
 
     main.container.with-header
+      h2.form-title Adicionar Novos Serviços
       form.add-service-form(method="POST", action="/adicionar-servico")
-        //- Bloco de informações gerais
-        .form-group
-          label(for="data") Data*
-          input.form-input(type="date", id="data", name="data", value="")
         
-        .form-group
-          label(for="talhao") Talhão(ões)*
-          .multiselect-container
-            .select-box(onclick="toggleCheckboxes('talhao-checkboxes-container', event)")
-              span#talhao-select-box-text.placeholder Selecione o(s) talhão(ões)
-              span.material-symbols-outlined arrow_drop_down
-            #talhao-checkboxes-container.checkboxes-container
-              .multiselect-search-wrapper
-                input.multiselect-search(type="text", placeholder="Pesquisar talhão...", onkeyup="filterOptions(this, 'talhao-checkboxes-container')", onclick="event.stopPropagation()")
-              label
-                input(type="checkbox", name="talhao[]", value="1", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Talhão 1
-              label
-                input(type="checkbox", name="talhao[]", value="2", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Talhão 2
-              label
-                input(type="checkbox", name="talhao[]", value="sede", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Sede
-        
-        .form-group
-          label(for="servico") Serviço(s)*
-          .multiselect-container
-            .select-box(onclick="toggleCheckboxes('servico-checkboxes-container', event)")
-              span#servico-select-box-text.placeholder Selecione o(s) serviço(s)
-              span.material-symbols-outlined arrow_drop_down
-            #servico-checkboxes-container.checkboxes-container
-              .multiselect-search-wrapper
-                input.multiselect-search(type="text", placeholder="Pesquisar serviço...", onkeyup="filterOptions(this, 'servico-checkboxes-container')", onclick="event.stopPropagation()")
-              - var servicos = {rocada: 'Roçada', adubacao: 'Adubação', pulverizacao: 'Pulverização', capina: 'Capina', coiso1: 'Coiso1', coiso2: 'coiso2', coiso3: 'coiso3', coiso4: 'coiso4'}
-              each label, value in servicos
-                label
-                  input(type="checkbox", name="servico[]", value=value, onchange="updateSelectBoxText('servico-checkboxes-container', 'servico-select-box-text', 'Selecione o(s) serviço(s)')")
-                  |  #{label}
+        #servicos-container
+          .servico-item
+            .servico-item-header
+              h3.servico-item-title Serviço 1
+              button.remove-item-btn.remove-servico-btn(type="button", title="Remover este serviço") &times;
 
-        .form-group
-          label(for="valor_servico") Valor do Serviço-R$*
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", id="valor_servico", name="valor_servico", step="0.01", min="0.00", placeholder="R$ 0,00")
-            button.stepper-btn(type="button", data-action="increment") +
-
-        hr.form-divider
-
-        //- ===== SEÇÃO DE PRODUTOS DINÂMICOS =====
-        h3.section-title Produtos
-        #produtos-lista.repeatable-list
-          .repeatable-item
-            .repeatable-item-header
-              h4.repeatable-item-title Produto 1
-              button.remove-item-btn(type="button" title="Remover produto") &times;
             .form-group
-              label(for="nome_produto") Nome do produto
-              input.form-input(type="text", name="produto_nome[]", placeholder="Ex: Calcário, 18-04-17")
+              label(for="data-0") Data*
+              input.form-input(type="date", id="data-0", name="servicos[0][data]")
+            
             .form-group
-              label(for="qtde_produto") Quantidade
+              label(for="talhao-0") Talhão*
+              select.form-input(id="talhao-0", name="servicos[0][talhao]")
+                option(value="", disabled, selected) Selecione um talhão
+                option(value="Talhão 1") Talhão 1
+                option(value="Talhão 2") Talhão 2
+                option(value="Sede") Sede
+            
+            .form-group
+              label(for="servico-select-box-text-0") Serviço(s)*
+              .multiselect-container
+                .select-box
+                  span(id="servico-select-box-text-0").placeholder Selecione o(s) serviço(s)
+                  span.material-symbols-outlined arrow_drop_down
+                .checkboxes-container(id="servico-checkboxes-container-0")
+                  .multiselect-search-wrapper
+                    input.multiselect-search(type="text", placeholder="Pesquisar serviço...")
+                  -
+                    var servicos = {
+                      adubacao: 'Adubação',
+                      aplicacao_fungicida: 'Aplicação de Fungicida',
+                      aplicacao_herbicida: 'Aplicação de Herbicida',
+                      aplicacao_inseticida: 'Aplicação de Inseticida',
+                      arruacao: 'Arruação',
+                      capinar: 'Capinar',
+                      corretivo_aplicacao_manual: 'Corretivo - Aplicação Manual',
+                      desbarra: 'Desbarra',
+                      desbrota: 'Desbrota',
+                      drench_nutricional_fungicida_inseticida: 'Drench (Nutricional + Fungicida + Inseticida)',
+                      drench: 'Drench',
+                      gesso_aplicacao_manual: 'Gesso Aplicação Manual',
+                      limpeza: 'Limpeza',
+                      microterraceamento: 'Microterraceamento',
+                      poda: 'Poda',
+                      pulverização_nutricional: 'Pulverização Nutricional',
+                      plantio: 'Plantio',
+                      replantio: 'Replantio',
+                      rocada: 'Roçada'
+                    }
+                  each label, value in servicos
+                    label
+                      input(type="checkbox", name="servicos[0][servico_tipo][]", value=value)
+                      | #{label}
+
+            .form-group
+              label(for="valor_servico-0") Valor do Serviço-R$*
               .input-stepper
                 button.stepper-btn(type="button", data-action="decrement") -
-                input.form-input.stepper-input(type="number", name="produto_qtde[]", placeholder="0", step="1", min="0")
-                button.stepper-btn(type="button", data-action="increment") +
-            .form-group
-              label(for="unidade_produto") Unidade
-              select.form-input(name="produto_unidade[]")
-                option(value="" disabled selected) Selecione
-                option(value="kg") Kg
-                option(value="litro") Litro
-                option(value="unidade") Unidade
-            .form-group
-              label(for="valor_produto") Valor por Produto-R$
-              .input-stepper
-                button.stepper-btn(type="button", data-action="decrement") -
-                input.form-input.stepper-input(type="number", name="produto_valor[]", step="0.01", min="0.00", placeholder="R$ 0,00")
+                input.form-input.stepper-input(type="number", id="valor_servico-0", name="servicos[0][valor_servico]", step="0.01", min="0.00", placeholder="R$ 0,00")
                 button.stepper-btn(type="button", data-action="increment") +
 
-        button#add-produto-btn.add-item-btn(type="button")
+            hr.form-divider
+
+            h3.section-title Produtos
+            .repeatable-list.produtos-list
+              .repeatable-item
+                .repeatable-item-header
+                  h4.repeatable-item-title Produto 1
+                  button.remove-item-btn(type="button", title="Remover produto") &times;
+                .form-group
+                  label(for="produto_nome-0-0") Nome do produto
+                  input.form-input(type="text", id="produto_nome-0-0", name="servicos[0][produtos][0][nome]", placeholder="Ex: Calcário, 18-04-17")
+                .form-group
+                  label(for="produto_qtde-0-0") Quantidade
+                  .input-stepper
+                    button.stepper-btn(type="button", data-action="decrement") -
+                    input.form-input.stepper-input(type="number", id="produto_qtde-0-0", name="servicos[0][produtos][0][qtde]", placeholder="0", step="1", min="0")
+                    button.stepper-btn(type="button", data-action="increment") +
+                .form-group
+                  label(for="produto_unidade-0-0") Unidade
+                  select.form-input(id="produto_unidade-0-0", name="servicos[0][produtos][0][unidade]")
+                    option(value="", disabled, selected) Selecione
+                    option(value="galão 5 litros") galão 5 litros
+                    option(value="galão 20 litros") galão 20 litros
+                    option(value="gramas") gramas
+                    option(value="h/tr") h/tr
+                    option(value="h/roç") h/roç
+                    option(value="Kg/ha") Kg/ha
+                    option(value="Kg/200litros") Kg/200litros
+                    option(value="kg/canhão") kg/canhão
+                    option(value="litros") litros
+                    option(value="Litros calda/talhão") Litros calda/talhão
+                    option(value="Litros/200litros") Litros/200litros
+                    option(value="litros/canhão") litros/canhão
+                    option(value="mL/100 litros") mL/100 litros
+                    option(value="mL/bomba") mL/bomba
+                    option(value="ml") ml
+                    option(value="pacote 10 gr") pacote 10 gr
+                    option(value="pacote 1 kg") pacote 1 kg
+                .form-group
+                  label(for="produto_valor-0-0") Valor por Produto-R$
+                  .input-stepper
+                    button.stepper-btn(type="button", data-action="decrement") -
+                    input.form-input.stepper-input(type="number", id="produto_valor-0-0", name="servicos[0][produtos][0][valor]", step="0.01", min="0.00", placeholder="R$ 0,00")
+                    button.stepper-btn(type="button", data-action="increment") +
+            button.add-item-btn.add-produto-btn(type="button")
+              span.material-symbols-outlined add_circle
+              | Adicionar outro produto
+
+            hr.form-divider
+
+            h3.section-title Trabalhadores / Operadores
+            .repeatable-list.trabalhadores-list
+              .repeatable-item
+                .repeatable-item-header
+                  h4.repeatable-item-title Trabalhador 1
+                  button.remove-item-btn(type="button", title="Remover trabalhador") &times;
+                .form-group
+                  label(for="trabalhador_nome-0-0") Nome do trabalhador/operador*
+                  input.form-input(type="text", id="trabalhador_nome-0-0", name="servicos[0][trabalhadores][0][nome]", placeholder="Ex: Célio Miguel da Silva")
+            button.add-item-btn.add-trabalhador-btn(type="button")
+              span.material-symbols-outlined add_circle
+              | Adicionar novo trabalhador
+
+        button#add-servico-btn.add-item-btn(type="button")
           span.material-symbols-outlined add_circle
-          | Adicionar outro produto
-
-        hr.form-divider
-
-        //- ===== SEÇÃO DE TRABALHADORES DINÂMICOS =====
-        h3.section-title Trabalhadores / Operadores
-        #trabalhadores-lista.repeatable-list
-          .repeatable-item
-            .repeatable-item-header
-              h4.repeatable-item-title Trabalhador 1
-              button.remove-item-btn(type="button" title="Remover trabalhador") &times;
-            .form-group
-              label(for="trabalhador") Nome do trabalhador/operador*
-              input.form-input(type="text", name="trabalhador[]", placeholder="Ex: Célio Miguel da Silva")
-
-        button#add-trabalhador-btn.add-item-btn(type="button")
-          span.material-symbols-outlined add_circle
-          | Adicionar novo trabalhador
-
-        hr.form-divider
+          | Adicionar outro serviço
 
         .form-actions
-          a.btn.btn-secondary(href="servicos") Cancelar
+          a.btn.btn-secondary(href="/servicos") Cancelar
           button.btn.btn-primary(type="submit") Salvar
 
-    //- Templates para os novos campos
-    template#produto-template
-      .repeatable-item
-        .repeatable-item-header
-          h4.repeatable-item-title Produto
-          button.remove-item-btn(type="button" title="Remover produto") &times;
-        .form-group
-          label Nome do produto
-          input.form-input(type="text", name="produto_nome[]", placeholder="Ex: Calcário, 18-04-17")
-        .form-group
-          label Quantidade
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", name="produto_qtde[]", placeholder="0", step="1", min="0")
-            button.stepper-btn(type="button", data-action="increment") +
-        .form-group
-          label Unidade
-          select.form-input(name="produto_unidade[]")
-            option(value="" disabled selected) Selecione
-            option(value="kg") Kg
-            option(value="litro") Litro
-            option(value="unidade") Unidade
-        .form-group
-          label Valor por Produto-R$
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", name="produto_valor[]", step="0.01", min="0.00", placeholder="R$ 0,00")
-            button.stepper-btn(type="button", data-action="increment") +
-            
-    template#trabalhador-template
-      .repeatable-item
-        .repeatable-item-header
-          h4.repeatable-item-title Trabalhador
-          button.remove-item-btn(type="button" title="Remover trabalhador") &times;
-        .form-group
-          label Nome do trabalhador/operador*
-          input.form-input(type="text", name="trabalhador[]", placeholder="Ex: Célio Miguel da Silva")
+    #confirm-modal.modal-overlay
+      .modal-content
+        p Deseja mesmo cancelar este serviço?
+        .modal-actions
+          button#modal-btn-cancel.btn.btn-secondary Cancelar
+          button#modal-btn-confirm.btn.btn-danger Confirmar
 
-
-    script.
-      document.addEventListener('DOMContentLoaded', function() {
-        // --- SCRIPT PARA PREENCHER DATA ATUAL ---
-        const dateInput = document.getElementById('data');
-        if (!dateInput.value) {
-          const today = new Date();
-          const year = today.getFullYear();
-          const month = String(today.getMonth() + 1).padStart(2, '0');
-          const day = String(today.getDate()).padStart(2, '0');
-          dateInput.value = `${year}-${month}-${day}`;
-        }
-
-        // --- LÓGICA PARA ADICIONAR CAMPOS DINÂMICOS ---
-        const addProdutoBtn = document.getElementById('add-produto-btn');
-        const addTrabalhadorBtn = document.getElementById('add-trabalhador-btn');
-
-        addProdutoBtn.addEventListener('click', () => {
-          addItem('produtos-lista', 'produto-template');
-        });
-
-        addTrabalhadorBtn.addEventListener('click', () => {
-          addItem('trabalhadores-lista', 'trabalhador-template');
-        });
-      });
-
-      // --- FUNÇÃO PARA ADICIONAR UM NOVO ITEM A UMA LISTA ---
-      function addItem(listId, templateId) {
-        const template = document.getElementById(templateId);
-        const list = document.getElementById(listId);
-        const clone = template.content.cloneNode(true);
-        list.appendChild(clone);
-        updateItemTitles(listId);
-      }
-
-      // --- FUNÇÃO PARA ATUALIZAR OS TÍTULOS (Ex: Produto 1, Produto 2) ---
-      function updateItemTitles(listId) {
-        const list = document.getElementById(listId);
-        const items = list.querySelectorAll('.repeatable-item');
-        const titlePrefix = listId === 'produtos-lista' ? 'Produto' : 'Trabalhador';
-
-        items.forEach((item, index) => {
-          const titleElement = item.querySelector('.repeatable-item-title');
-          if (titleElement) {
-            titleElement.textContent = `${titlePrefix} ${index + 1}`;
-          }
-        });
-      }
-      
-      // --- EVENTOS DE CLIQUE DELEGADOS PARA TODA A PÁGINA ---
-      document.addEventListener('click', function (e) {
-        // Lógica para os botões stepper (+/-)
-        if (e.target.matches('.stepper-btn')) {
-          const action = e.target.dataset.action;
-          const input = e.target.parentElement.querySelector('.stepper-input');
-          // (Restante do código do stepper continua igual)
-          const step = parseFloat(input.step) || 1;
-          let value = parseFloat(input.value) || 0;
-
-          if (action === 'increment') {
-            value += step;
-          } else if (action === 'decrement') {
-            const min = parseFloat(input.min);
-            if (!isNaN(min) && value > min) { value -= step; } 
-            else if (isNaN(min) && value > 0) { value -= step; }
-          }
-          const minVal = parseFloat(input.min);
-          if (!isNaN(minVal) && value < minVal) { value = minVal; }
-          input.value = (step < 1) ? value.toFixed(2) : value.toFixed(0);
-        }
-
-        // Lógica para remover um item da lista
-        if (e.target.matches('.remove-item-btn')) {
-          const itemToRemove = e.target.closest('.repeatable-item');
-          const list = itemToRemove.parentElement;
-          itemToRemove.remove();
-          updateItemTitles(list.id);
-        }
-      });
-
-
-      // --- SCRIPTS DO MULTI-SELECT (sem alterações) ---
-      function toggleCheckboxes(containerId, event) {
-        event.stopPropagation();
-        const checkboxesContainer = document.getElementById(containerId);
-        document.querySelectorAll('.checkboxes-container.show').forEach(openContainer => {
-            if (openContainer.id !== containerId) {
-                openContainer.classList.remove('show');
-            }
-        });
-        checkboxesContainer.classList.toggle('show');
-      }
-
-      function updateSelectBoxText(containerId, textId, placeholderText) {
-        const selectedCheckboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
-        const selectBoxText = document.getElementById(textId);
-
-        if (selectedCheckboxes.length === 0) {
-          selectBoxText.textContent = placeholderText;
-          selectBoxText.classList.add('placeholder');
-        } else {
-          const selectedValues = [];
-          selectedCheckboxes.forEach(checkbox => {
-            selectedValues.push(checkbox.parentElement.textContent.trim());
-          });
-          selectBoxText.textContent = selectedValues.join(' + ');
-          selectBoxText.classList.remove('placeholder');
-        }
-      }
-      
-      window.addEventListener('click', function(e) {
-        let clickedInside = e.target.closest('.multiselect-container');
-        if (!clickedInside) {
-          document.querySelectorAll('.checkboxes-container.show').forEach(container => {
-            container.classList.remove('show');
-          });
-        }
-      });
-
-      function filterOptions(inputElement, containerId) {
-        const filterText = inputElement.value.toLowerCase();
-        const container = document.getElementById(containerId);
-        const labels = container.getElementsByTagName('label');
-        for (let i = 0; i < labels.length; i++) {
-          const labelText = labels[i].textContent.toLowerCase();
-          if (labelText.includes(filterText)) {
-            labels[i].style.display = "";
-          } else {
-            labels[i].style.display = "none";
-          }
-        }
-      }
+    script(src="/js/adicionar-servico.js")

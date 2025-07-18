@@ -15,8 +15,8 @@ html(lang="pt-BR")
   body
     header.app-header
       span.material-symbols-outlined.icon-button menu
-      img.header-logo(src="assets/logo-emater.svg", alt="Logo EMATER", onerror="this.onerror=null;this.src='https://placehold.co/150x40/384d1a/ffffff?text=Emater';")
-      div(style="width: 40px;")
+      img.header-logo(src="assets/logo_barra.png", alt="Logo EMATER")
+      div(style="width: 30px;")
 
     main.container.with-header-and-footer
       button.filter-toggle#filter-toggle
@@ -31,8 +31,23 @@ html(lang="pt-BR")
               .input-with-icon
                 span.material-symbols-outlined search
                 input#filter-text(type="text", placeholder="Nome do serviço...")
-              
-            //- ===== CAMPO TIPO DE SERVIÇO ATUALIZADO PARA MULTI-SELECT =====
+            
+            //- NOVO: Filtro por Talhão adicionado
+            .filter-group
+              label(for="filter-talhao") Talhão
+              .multiselect-container
+                .select-box(onclick="toggleCheckboxes('filter-talhao-checkboxes', event)")
+                  span#filter-talhao-text.placeholder Todos
+                  span.material-symbols-outlined arrow_drop_down
+                #filter-talhao-checkboxes.checkboxes-container
+                  .multiselect-search-wrapper
+                    input.multiselect-search(type="text", placeholder="Pesquisar talhão...", onkeyup="filterOptions(this, 'filter-talhao-checkboxes')", onclick="event.stopPropagation()")
+                  - var talhoes = {'Talhao 1': 'Talhão 1', 'Talhao 2': 'Talhão 2', 'Talhao 3': 'Talhão 3', 'Talhao 4': 'Talhão 4', 'Talhao 6': 'Talhão 6', 'Talhao 7': 'Talhão 7', Sede: 'Sede', Cereja: 'Cereja', Cidreira: 'Cidreira'}
+                  each label, value in talhoes
+                    label
+                      input(type="checkbox", name="filter_talhao[]", value=value, onchange="updateSelectBoxText('filter-talhao-checkboxes', 'filter-talhao-text', 'Todos')")
+                      |  #{label}
+
             .filter-group
               label(for="filter-servico") Tipo de Serviço
               .multiselect-container
@@ -42,7 +57,7 @@ html(lang="pt-BR")
                 #filter-servico-checkboxes.checkboxes-container
                   .multiselect-search-wrapper
                     input.multiselect-search(type="text", placeholder="Pesquisar serviço...", onkeyup="filterOptions(this, 'filter-servico-checkboxes')", onclick="event.stopPropagation()")
-                  - var tiposServico = {rocada: 'Roçada', microterraceamento: 'Microterraceamento', pulverizacao: 'Pulverização'}
+                  - var tiposServico = {rocada: 'Roçada', microterraceamento: 'Microterraceamento', pulverizacao: 'Pulverização', inseticida: 'Inseticida', fungicida: 'Fungicida'}
                   each label, value in tiposServico
                     label
                       input(type="checkbox", name="filter_servico[]", value=value, onchange="updateSelectBoxText('filter-servico-checkboxes', 'filter-servico-text', 'Todos')")
@@ -68,54 +83,43 @@ html(lang="pt-BR")
         a(href="detalhes").service-card
           h3 Roçada 
           p Talhao 1 + Talhao 2
-          br
           p 05/11/2024
         a(href="detalhes").service-card
           h3 Roçada
           p Sede + Cereja
-          br
           p 07/10/2024
         a(href="detalhes").service-card
           h3 Roçada
           p Talhao 3 + Sede
-          br
           p 08/10/2024
         a(href="detalhes").service-card
           h3 Microterraceamento
           p Talhao 4
-          br
-          p 9/10/2024
+          p 09/10/2024
         a(href="detalhes").service-card
           h3 Inseticida
           p Talhao 6 + Talhao 1
-          br
-          p 9/10/2024
+          p 09/10/2024
         a(href="detalhes").service-card
           h3 Fungicida
           p Todos
-          br
           p 10/10/2024
         a(href="detalhes").service-card
           h3 Pulverização Nutricional 
-          p Cidreia
-          br
+          p Cidreira
           p 13/10/2024
         a(href="detalhes").service-card
           h3 Calagem + Preparo do Solo
           p Talhao 1
-          br
           p 15/10/2024
         a(href="detalhes").service-card
           h3 Roçada
           p Talhao 2
-          br
           p 15/10/2024
         a(href="detalhes").service-card
           h3 Roçada
           p Talhao 7 + Cidreira
-          br
           p 16/10/2024
-
         
       a.fab(href="adicionar-servico")
         span.material-symbols-outlined add
@@ -135,10 +139,11 @@ html(lang="pt-BR")
           span.nav-label Secagem
 
     script.
-      // --- Funções reutilizáveis para o Multi-Select (sem alterações) ---
+      // --- Funções reutilizáveis para o Multi-Select ---
       function toggleCheckboxes(containerId, event) {
         event.stopPropagation();
         const checkboxesContainer = document.getElementById(containerId);
+        // Fecha outros dropdowns abertos
         document.querySelectorAll('.checkboxes-container.show').forEach(openContainer => {
             if (openContainer.id !== containerId) {
                 openContainer.classList.remove('show');
@@ -195,7 +200,6 @@ html(lang="pt-BR")
         const clearBtn = document.getElementById('clear-filters-btn');
         const serviceCards = document.querySelectorAll('.service-list .service-card');
 
-        // Lógica para mostrar/esconder o filtro
         if (toggleButton && filterContent) {
           toggleButton.addEventListener('click', () => {
             filterContent.classList.toggle('hidden');
@@ -211,13 +215,11 @@ html(lang="pt-BR")
           return new Date(year, month - 1, day);
         }
 
-        // ===== NOVA FUNÇÃO PARA NORMALIZAR TEXTOS (REMOVER ACENTOS) =====
         function normalizeString(str) {
           if (!str) return "";
           return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
 
-        // ===== FUNÇÃO DE FILTRO CORRIGIDA =====
         function aplicarFiltros() {
           const textoFiltro = normalizeString(document.getElementById('filter-text').value.toLowerCase());
           const dataInicioFiltro = document.getElementById('filter-data-inicio').value;
@@ -225,24 +227,27 @@ html(lang="pt-BR")
           const dataInicio = dataInicioFiltro ? new Date(dataInicioFiltro + 'T00:00:00') : null;
           const dataFim = dataFimFiltro ? new Date(dataFimFiltro + 'T00:00:00') : null;
 
-          // Pega os valores NORMALIZADOS dos checkboxes selecionados
           const servicoCheckboxes = document.querySelectorAll('#filter-servico-checkboxes input[type="checkbox"]:checked');
           const servicosSelecionados = Array.from(servicoCheckboxes).map(cb => normalizeString(cb.value.toLowerCase()));
 
+          // Lógica para o novo filtro de Talhão
+          const talhaoCheckboxes = document.querySelectorAll('#filter-talhao-checkboxes input[type="checkbox"]:checked');
+          const talhoesSelecionados = Array.from(talhaoCheckboxes).map(cb => normalizeString(cb.parentElement.textContent.trim().toLowerCase()));
+
           serviceCards.forEach(card => {
             const nomeServico = normalizeString(card.querySelector('h3').textContent.toLowerCase());
-            const dataServicoTexto = card.querySelector('p').textContent;
+            const pElements = card.querySelectorAll('p');
+            const talhaoTexto = pElements.length > 0 ? normalizeString(pElements[0].textContent.toLowerCase()) : "";
+            const dataServicoTexto = pElements.length > 1 ? pElements[1].textContent : '';
             const dataServico = parseDate(dataServicoTexto);
             
             const passouTexto = !textoFiltro || nomeServico.includes(textoFiltro);
-            
-            // A lógica de filtro agora compara textos normalizados
             const passouServico = servicosSelecionados.length === 0 || servicosSelecionados.some(filtro => nomeServico.includes(filtro));
-            
+            const passouTalhao = talhoesSelecionados.length === 0 || talhoesSelecionados.some(filtro => talhaoTexto.includes(filtro));
             const passouDataInicio = !dataInicio || !dataServico || dataServico >= dataInicio;
             const passouDataFim = !dataFim || !dataServico || dataServico <= dataFim;
 
-            if (passouTexto && passouServico && passouDataInicio && passouDataFim) {
+            if (passouTexto && passouServico && passouTalhao && passouDataInicio && passouDataFim) {
               card.style.display = 'block';
             } else {
               card.style.display = 'none';
@@ -257,13 +262,14 @@ html(lang="pt-BR")
 
         clearBtn.addEventListener('click', () => {
           form.reset();
-          const servicoCheckboxes = document.querySelectorAll('#filter-servico-checkboxes input[type="checkbox"]');
-          servicoCheckboxes.forEach(cb => cb.checked = false);
+          // Limpa filtro de serviço
+          document.querySelectorAll('#filter-servico-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
           updateSelectBoxText('filter-servico-checkboxes', 'filter-servico-text', 'Todos');
+          
+          // Limpa filtro de talhão
+          document.querySelectorAll('#filter-talhao-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
+          updateSelectBoxText('filter-talhao-checkboxes', 'filter-talhao-text', 'Todos');
+
           aplicarFiltros();
         });
       });
-
-      
-
- 
