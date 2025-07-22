@@ -20,16 +20,34 @@ var app = express();
 //   console.error('Erro ao conectar ao MongoDB:', err);
 // });
 
-const isTestEnvironment = process.env.NODE_ENV === 'test';
-const dbConnectionString = isTestEnvironment 
-  ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
-  : 'mongodb://localhost:27017/agricola'; 
-  
+let dbConnectionString = process.env.MONGO_URL;
+
+if (!dbConnectionString) {
+  console.log('Variável MONGO_URL não encontrada. Usando conexão local...');
+  const isTestEnvironment = process.env.NODE_ENV === 'test';
+  dbConnectionString = isTestEnvironment 
+    ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
+    : 'mongodb://localhost:27017/agricola';      // Banco para desenvolvimento local
+}
+
 mongoose.connect(dbConnectionString).then(() => {
-  console.log(`Conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
+  console.log(`Conectado ao MongoDB com sucesso!`);
 }).catch((err) => {
   console.error('Erro ao conectar ao MongoDB:', err);
 });
+
+
+
+// const isTestEnvironment = process.env.NODE_ENV === 'test';
+// const dbConnectionString = isTestEnvironment 
+//   ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
+//   : 'mongodb://localhost:27017/agricola'; 
+  
+// mongoose.connect(dbConnectionString).then(() => {
+//   console.log(`Conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
+// }).catch((err) => {
+//   console.error('Erro ao conectar ao MongoDB:', err);
+// });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
