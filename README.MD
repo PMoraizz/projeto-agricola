@@ -1,102 +1,92 @@
-# Deploy
+# Projeto de Gestão Agrícola - EMATER
 
-Projeto com o objetivo de revisar:
-- Teste unitário
-- Teste de aceitação
-- Containerização
-- Pipeline CI/CD
+![Logo](public/assets/logo_barra.png)
 
-### Preparação do Ambiente
+## Descrição
 
-1. `npm install`
-1. Comandos:
-    - `npm start`: executar aplicação em modo de produção
-    - `npm run dev`: executar aplicação em mode de desenvolvimento
+Este projeto é uma aplicação web desenvolvida para auxiliar produtores rurais na gestão de serviços e atividades em suas propriedades. A plataforma permite o cadastro, visualização, edição e exclusão de serviços agrícolas, associando-os a produtos utilizados e trabalhadores envolvidos.
 
-### Passo 1: Definição de Requisitos com BDD
+O sistema foi construído com foco em uma experiência de usuário simples e direta, especialmente em dispositivos móveis, e possui um sistema de autenticação para garantir que cada produtor tenha acesso apenas aos seus próprios dados.
 
-1. `npm i -D @cucumber/cucumber`
-2. Acrescentar em `package.json`:
-    ```json
-    "scripts": {
-        "test:acceptance": "cucumber-js"
-    }
+---
+
+## Funcionalidades Principais
+
+-   **Autenticação de Usuários**: Sistema seguro de registro e login para produtores, garantindo a privacidade dos dados.
+-   **Cadastro de Serviços**: Formulário dinâmico para adicionar novos serviços, permitindo associar múltiplos produtos e trabalhadores a cada atividade.
+-   **Listagem e Visualização**: Tela principal que exibe todos os serviços cadastrados pelo produtor logado, com opções de filtro.
+-   **Detalhes do Serviço**: Visualização completa de um serviço específico, com todas as informações de data, talhão, produtos e trabalhadores.
+-   **Edição e Exclusão**: Funcionalidades completas de CRUD, permitindo que o produtor atualize ou remova serviços cadastrados, com uma janela de confirmação para exclusões.
+-   **Testes Automatizados**: Conjunto de testes de aceitação (BDD) com Cucumber para garantir a estabilidade e o correto funcionamento das principais funcionalidades (ex: login).
+
+---
+
+## Tecnologias Utilizadas
+
+-   **Backend**: Node.js, Express.js
+-   **Banco de Dados**: MongoDB com Mongoose
+-   **Frontend**: Jade (Pug) para renderização de views
+-   **Autenticação**: Gerenciamento de sessão com `express-session` e criptografia de senhas com `bcrypt`.
+-   **Testes**: Cucumber, Selenium WebDriver, Chai
+
+---
+
+## Como Iniciar o Projeto
+
+Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de desenvolvimento.
+
+### Pré-requisitos
+
+-   [Node.js](https://nodejs.org/) (versão 16 ou superior)
+-   [MongoDB](https://www.mongodb.com/try/download/community) instalado e rodando localmente na porta padrão (`27017`).
+
+### Instalação
+
+1.  Clone o repositório para a sua máquina local:
+    ```bash
+    git clone <URL_DO_SEU_REPOSITORIO>
     ```
-3. Criar o arquivo `cucumber.json` com o conteúdo:
-    ```json
-    {
-        "default": {
-            "formatOptions": {
-                "snippetInterface": "synchronous"
-            }
-        }
-    }
+2.  Navegue até a pasta do projeto:
+    ```bash
+    cd projeto-agricola
     ```
-4. Criar a pasta `./features`
-5. Criar um arquivo `.feature` que corresponda aos requisitos. Exemplo: `login.feature`
-
-### Passo 2: Escrever os testes unitários e sua implementação
-
-Recomenda-se usar TDD, ou seja, escrever os testes primeiros e depois a implementação.
-
-1. `npm i -D jest`
-2. Acrescentar em `package.json`:
-    ```json
-    "scripts": {
-        "test:unit": "npx jest"
-    }
+3.  Instale todas as dependências do projeto:
+    ```bash
+    npm install
     ```
-3. Escrever os testes untiários antes da implementação.
-4. Execute `npm test:unit`. Certamente nenhum teste passará.
-5. Faça a implementação correspondente aos testes escritos.
-6. Execute `npm test:unit`. Agora, os testes devem passar.
 
-### Passo 3: Escrever os testes de aceitação e sua implementação
+### Rodando a Aplicação
 
-1. `npm i -D puppeteer` (O *puppeteer* é equivalente ao Selenium e é mantido pelo time do Chrome).
-2. Crie o arquivo `.steps.js` em `./features/step_definitions`. Exemplo: `./features/step_definitions/todo.steps.js`
-3. Faça a implementação correspondente aos testes escritos.
-4. Execute `npm test:acceptance`.
+1.  Para iniciar o servidor de desenvolvimento, execute o comando:
+    ```bash
+    npm start
+    ```
+2.  A aplicação estará disponível em `http://localhost:3000`. O servidor irá se conectar automaticamente ao banco de dados `agricola`.
 
-**Dica!**
+---
 
-Para executar todos os testes, adicione isto ao `package.json`:
-```json
-"scripts": {
-    "test": "npm run test:unit && npm run test:acceptance"
-}
-```
+## Como Rodar os Testes
 
-### Passo 4: Criar um container para o app
+O projeto está configurado com testes de aceitação automatizados usando Cucumber para simular o comportamento do usuário.
 
-1. Crie o arquivo `docker-compose.yml`
-2. Execute `docker-compose up -d`
+### Configuração do Ambiente de Teste
 
-### Passo 5: Criar um pipeline CI/CD
+Os testes rodam em um ambiente isolado e utilizam um banco de dados separado chamado `agricola_teste` para não interferir com seus dados de desenvolvimento.
 
-1. Crie a hierarquia de pastas `.github/workflows`
-2. Crie o arquivo `.yml` com as configurações dentro da pasta
-3. Configure o [https://vercel.com](Vercel) para implantar as modificações em produção após o GitHub Actions
-    1. Crie o arquivo `./api/index.js`
-        ```js
-        var app = require('../app');
-        module.exports = app;
-        ```
-    2. Crie o arquivo `./vercel.json`
-        ```json
-        {
-        "version": 2,
-        "builds": [
-            { "src": "api/index.js", "use": "@vercel/node" }
-        ],
-        "routes": [
-            { "src": "/(.*)", "dest": "api/index.js" }
-        ]
-        }
-        ```
-    3. Para funcionar corretamente o teste de aceitação no GitHub Actions, instale `npm i -D start-server-and-test`.
-    4. Atualize `"test:acceptance": "cucumber-js"` para `"test:acceptance": "start-server-and-test start http://localhost:3311 cucumber-js"`.
-    5. Atualize o `tests.yml` para que o teste de aceitação execute com sucesso no GitHub Actions. 
-    6. Crie o arquivo `./Dockerfile` para que o `Puppeteer` funcione perfeitamente no GitHub Actions.
-    7. Atualize o `docker-compose.yml` para reconhecer as configurações do `Dockerfile`.
-4. Atualize o repostiório e verifique o status em GitHub Actions
+### Executando os Testes
+
+Para rodar os testes, você precisará de **dois terminais** abertos na pasta do projeto.
+
+1.  **Terminal 1: Iniciar o Servidor em Modo de Teste**
+    Execute o comando abaixo para iniciar a aplicação conectada ao banco de dados de teste:
+    ```bash
+    npm run start:test
+    ```
+    Você verá uma mensagem confirmando a conexão ao banco em modo de teste. Mantenha este terminal rodando.
+
+2.  **Terminal 2: Executar os Testes**
+    Com o servidor de teste rodando, execute o Cucumber com o seguinte comando:
+    ```bash
+    npm test
+    ```
+    Isso iniciará o Selenium, que abrirá uma janela do Chrome, executará as ações descritas nos cenários de teste e exibirá os resultados no terminal.
