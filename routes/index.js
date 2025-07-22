@@ -9,7 +9,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login', { error: req.query.error });
+  // Passa a mensagem de erro do flash para a variável 'error' no template
+  res.render('login', { error: req.flash('error') });
 });
 
 router.post('/login', authController.login);

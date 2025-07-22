@@ -1,39 +1,23 @@
 const Usuario = require('../models/Usuario');
 
+// Em controllers/authController.js
 exports.login = async (req, res) => {
-  
   const { email, senha } = req.body;
-  
-  
-  console.log(`--- Tentativa de Login ---`);
-  console.log(`Email recebido: ${email}`);
-  console.log(`Senha recebida: ${senha}`);
-
   try {
-    
     const user = await Usuario.findOne({ username: email });
-    
-    if (!user) {
-      console.log('Resultado: Usuário não encontrado.');
-      return res.redirect('/login?error=true');
+    if (!user || !(await user.comparePassword(senha))) {
+      // 1. Define a mensagem de erro na sessão flash
+      req.flash('error', 'E-mail ou senha inválidos.'); 
+      // 2. Redireciona sem o parâmetro de URL
+      return res.redirect('/login');
     }
 
-    
-    const isMatch = await user.comparePassword(senha);
+    req.session.userId = user._id;
+    res.redirect('/servicos');
 
-    console.log(`Resultado da comparação de senhas: ${isMatch}`);
-
-    if (isMatch) {
-      console.log('Login bem-sucedido!');
-      req.session.userId = user._id;
-      res.redirect('/servicos');
-    } else {
-      console.log('Resultado: Senhas não batem.');
-      res.redirect('/login?error=true');
-    }
   } catch (error) {
-    console.error('Erro durante o login:', error);
-    res.redirect('/login?error=true');
+    req.flash('error', 'Ocorreu um erro no servidor.');
+    res.redirect('/login');
   }
 };
 

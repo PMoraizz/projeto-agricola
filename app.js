@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session'); // 1. Importe o express-session
+var flash = require('connect-flash');
 var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,11 +20,13 @@ var app = express();
 //   console.error('Erro ao conectar ao MongoDB:', err);
 // });
 
-mongoose.connect('mongodb://localhost:27017/agricola', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('Conectado ao MongoDB com sucesso na porta 27017!');
+const isTestEnvironment = process.env.NODE_ENV === 'test';
+const dbConnectionString = isTestEnvironment 
+  ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
+  : 'mongodb://localhost:27017/agricola'; 
+  
+mongoose.connect(dbConnectionString).then(() => {
+  console.log(`Conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
 }).catch((err) => {
   console.error('Erro ao conectar ao MongoDB:', err);
 });
@@ -46,6 +49,8 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Em produção, com HTTPS, use { secure: true }
 }));
+
+app.use(flash());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

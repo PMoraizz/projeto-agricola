@@ -13,8 +13,8 @@ html(lang="pt-BR")
       img.login-logo(src="assets/logo_barra.png", alt="Logo da EMATER Minas Gerais")
       h1.form-title Conta
 
-      if error
-        p(style="color: red; text-align: center;") E-mail ou senha inválidos.
+      if error && error.length > 0
+      p.error-message(style="color: red; text-align: center;")= error[0]
 
       form.login-form(action="/login", method="POST")
         //- Os inputs agora não têm mais comentários na mesma linha
