@@ -12,12 +12,11 @@ O sistema foi construído com foco em uma experiência de usuário simples e dir
 
 ## Funcionalidades Principais
 
--   **Autenticação de Usuários**: Sistema seguro de registro e login para produtores, garantindo a privacidade dos dados.
--   **Cadastro de Serviços**: Formulário dinâmico para adicionar novos serviços, permitindo associar múltiplos produtos e trabalhadores a cada atividade.
--   **Listagem e Visualização**: Tela principal que exibe todos os serviços cadastrados pelo produtor logado, com opções de filtro.
--   **Detalhes do Serviço**: Visualização completa de um serviço específico, com todas as informações de data, talhão, produtos e trabalhadores.
--   **Edição e Exclusão**: Funcionalidades completas de CRUD, permitindo que o produtor atualize ou remova serviços cadastrados, com uma janela de confirmação para exclusões.
--   **Testes Automatizados**: Conjunto de testes de aceitação (BDD) com Cucumber para garantir a estabilidade e o correto funcionamento das principais funcionalidades (ex: login).
+-   **Autenticação de Usuários**: Sistema seguro de registro e login para produtores.
+-   **Gestão de Serviços (CRUD)**: Funcionalidades completas de cadastro, visualização, edição e exclusão de serviços.
+-   **Testes Automatizados**: O projeto conta com uma suíte completa de testes, incluindo:
+    -   **Testes de Aceitação (BDD)** com Cucumber para validar o comportamento do sistema sob a perspectiva do usuário.
+    -   **Testes de Integração** com Jest e Supertest para garantir a robustez e o correto funcionamento das rotas da API.
 
 ---
 
@@ -26,8 +25,10 @@ O sistema foi construído com foco em uma experiência de usuário simples e dir
 -   **Backend**: Node.js, Express.js
 -   **Banco de Dados**: MongoDB com Mongoose
 -   **Frontend**: Jade (Pug) para renderização de views
--   **Autenticação**: Gerenciamento de sessão com `express-session` e criptografia de senhas com `bcrypt`.
--   **Testes**: Cucumber, Selenium WebDriver, Chai
+-   **Autenticação**: `express-session`, `bcrypt`, `connect-flash`
+-   **Testes**:
+    -   **Aceitação**: Cucumber, Selenium WebDriver, Chai
+    -   **Integração**: Jest, Supertest
 
 ---
 
@@ -38,7 +39,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de d
 ### Pré-requisitos
 
 -   [Node.js](https://nodejs.org/) (versão 16 ou superior)
--   [MongoDB](https://www.mongodb.com/try/download/community) instalado e rodando localmente na porta padrão (`27017`).
+-   [MongoDB](https://www.mongodb.com/try/download/community) instalado e rodando localmente.
 -   [Docker](https://www.docker.com/products/docker-desktop/) (opcional, para rodar em um contêiner).
 
 ### Instalação
@@ -62,7 +63,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de d
     ```bash
     npm start
     ```
-2.  A aplicação estará disponível em `http://localhost:3000`. O servidor irá se conectar automaticamente ao banco de dados `agricola`.
+2.  A aplicação estará disponível em `http://localhost:3000`.
 
 ### Rodando a Aplicação com Docker
 
@@ -76,26 +77,33 @@ A aplicação estará disponível em `http://localhost:3000`.
 
 ## Como Rodar os Testes
 
-O projeto está configurado com testes de aceitação automatizados usando Cucumber para simular o comportamento do usuário.
+O projeto possui dois tipos de testes automatizados. Ambos rodam em um ambiente isolado e utilizam um banco de dados separado chamado `agricola_teste`.
 
-### Configuração do Ambiente de Teste
+### 1. Testes de Integração (Jest)
 
-Os testes rodam em um ambiente local e utilizam um banco de dados separado chamado `agricola_teste` para não interferir com seus dados de desenvolvimento.
+Estes testes verificam as rotas da API diretamente, garantindo a lógica do backend. **São mais rápidos e ideais para verificações frequentes durante o desenvolvimento.**
 
-### Executando os Testes
+1.  **Pré-requisito**: Certifique-se de que o MongoDB esteja rodando localmente.
+2.  Execute o seguinte comando no terminal:
+    ```bash
+    npm run test:integration
+    ```
+    O Jest executará todos os testes de integração e exibirá um relatório de cobertura de código no final.
 
-Para rodar os testes, você precisará de **dois terminais** abertos na pasta do projeto.
+### 2. Testes de Aceitação (Cucumber)
+
+Estes testes simulam o comportamento real de um usuário no navegador.
 
 1.  **Terminal 1: Iniciar o Servidor em Modo de Teste**
     Execute o comando abaixo para iniciar a aplicação conectada ao banco de dados de teste:
     ```bash
     npm run start:test
     ```
-    Você verá uma mensagem confirmando a conexão ao banco em modo de teste. Mantenha este terminal rodando.
+    Mantenha este terminal rodando.
 
 2.  **Terminal 2: Executar os Testes**
-    Com o servidor de teste rodando, execute o Cucumber com o seguinte comando:
+    Com o servidor de teste rodando, execute o Cucumber no segundo terminal:
     ```bash
     npm test
     ```
-    Isso iniciará o Selenium, que abrirá uma janela do Chrome, executará as ações descritas nos cenários de teste e exibirá os resultados no terminal.
+    Isso iniciará o Selenium, que abrirá uma janela do Chrome para executar as ações descritas nos cenários de teste.
