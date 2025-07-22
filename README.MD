@@ -39,6 +39,7 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de d
 
 -   [Node.js](https://nodejs.org/) (versão 16 ou superior)
 -   [MongoDB](https://www.mongodb.com/try/download/community) instalado e rodando localmente na porta padrão (`27017`).
+-   [Docker](https://www.docker.com/products/docker-desktop/) (opcional, para rodar em um contêiner).
 
 ### Instalação
 
@@ -55,13 +56,21 @@ Siga os passos abaixo para configurar e rodar a aplicação em seu ambiente de d
     npm install
     ```
 
-### Rodando a Aplicação
+### Rodando a Aplicação Localmente
 
 1.  Para iniciar o servidor de desenvolvimento, execute o comando:
     ```bash
     npm start
     ```
 2.  A aplicação estará disponível em `http://localhost:3000`. O servidor irá se conectar automaticamente ao banco de dados `agricola`.
+
+### Rodando a Aplicação com Docker
+
+Caso deseje rodar a aplicação em um ambiente isolado com Docker, utilize o comando abaixo na raiz do projeto:
+```bash
+docker-compose up --build
+```
+A aplicação estará disponível em `http://localhost:3000`.
 
 ---
 
@@ -71,7 +80,7 @@ O projeto está configurado com testes de aceitação automatizados usando Cucum
 
 ### Configuração do Ambiente de Teste
 
-Os testes rodam em um ambiente isolado e utilizam um banco de dados separado chamado `agricola_teste` para não interferir com seus dados de desenvolvimento.
+Os testes rodam em um ambiente local e utilizam um banco de dados separado chamado `agricola_teste` para não interferir com seus dados de desenvolvimento.
 
 ### Executando os Testes
 
