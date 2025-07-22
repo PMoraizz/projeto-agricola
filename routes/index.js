@@ -4,12 +4,33 @@ var authController = require('../controllers/authController');
 var Servico = require('../models/Servico'); 
 var Usuario = require('../models/Usuario');
 
+const servicosMap = {
+  adubacao: 'Adubação',
+  aplicacao_fungicida: 'Aplicação de Fungicida',
+  aplicacao_herbicida: 'Aplicação de Herbicida',
+  aplicacao_inseticida: 'Aplicação de Inseticida',
+  arruacao: 'Arruação',
+  capinar: 'Capinar',
+  corretivo_aplicacao_manual: 'Corretivo - Aplicação Manual',
+  desbarra: 'Desbarra',
+  desbrota: 'Desbrota',
+  drench_nutricional_fungicida_inseticida: 'Drench (Nutricional + Fungicida + Inseticida)',
+  drench: 'Drench',
+  gesso_aplicacao_manual: 'Gesso Aplicação Manual',
+  limpeza: 'Limpeza',
+  microterraceamento: 'Microterraceamento',
+  poda: 'Poda',
+  pulverização_nutricional: 'Pulverização Nutricional',
+  plantio: 'Plantio',
+  replantio: 'Replantio',
+  rocada: 'Roçada'
+};
+
 router.get('/', function(req, res, next) {
   res.render('index');
 });
 
 router.get('/login', function(req, res, next) {
-  // Passa a mensagem de erro do flash para a variável 'error' no template
   res.render('login', { error: req.flash('error') });
 });
 
@@ -18,11 +39,13 @@ router.post('/login', authController.login);
 
 router.get('/servicos', authController.isAuthenticated, async function(req, res, next) {
   try {
-    
     const servicosDoUsuario = await Servico.find({ proprietario: req.session.userId }).sort({ data: -1 });
     
-    
-    res.render('servicos', { servicos: servicosDoUsuario });
+    // Agora, enviamos a lista de serviços E o mapa de tradução para a página
+    res.render('servicos', { 
+      servicos: servicosDoUsuario,
+      servicosMap: servicosMap // <-- Passando o mapa para o Jade
+    });
   } catch (error) {
     console.error("Erro ao buscar serviços:", error);
     next(error); 
@@ -53,12 +76,12 @@ router.get('/adicionar-servico', authController.isAuthenticated, function(req, r
 
 
 router.post('/adicionar-servico', authController.isAuthenticated, async function(req, res, next) {
-  console.log('DADOS RECEBIDOS DO FORMULÁRIO:', JSON.stringify(req.body, null, 2));
+  // console.log('DADOS RECEBIDOS DO FORMULÁRIO:', JSON.stringify(req.body, null, 2));
 
   const { servicos } = req.body;
 
   if (!Array.isArray(servicos) || servicos.length === 0) {
-    console.log('Nenhum serviço foi submetido ou o formato dos dados está incorreto.');
+    // console.log('Nenhum serviço foi submetido ou o formato dos dados está incorreto.');
     return res.redirect('/adicionar-servico');
   }
 
@@ -98,7 +121,7 @@ router.post('/adicionar-servico', authController.isAuthenticated, async function
       });
 
       await novoServico.save();
-      console.log('Serviço salvo com sucesso no banco de dados:', novoServico.talhao);
+      // console.log('Serviço salvo com sucesso no banco de dados:', novoServico.talhao);
     }
 
     res.redirect('/servicos');
@@ -119,7 +142,7 @@ router.get('/detalhes/:id', authController.isAuthenticated, async (req, res, nex
 
     if (!servico) {
       
-      console.log('Serviço não encontrado ou não pertence ao usuário.');
+      // console.log('Serviço não encontrado ou não pertence ao usuário.');
       return res.redirect('/servicos');
     }
 
@@ -139,7 +162,7 @@ router.get('/editar/:id', authController.isAuthenticated, async (req, res, next)
     const servico = await Servico.findOne({ _id: req.params.id, proprietario: req.session.userId });
 
     if (!servico) {
-      console.log('Serviço para edição não encontrado ou não pertence ao usuário.');
+      //console.log('Serviço para edição não encontrado ou não pertence ao usuário.');
       return res.redirect('/servicos');
     }
 
@@ -190,7 +213,7 @@ router.post('/editar/:id', authController.isAuthenticated, async (req, res, next
       return res.status(404).send("Serviço não encontrado para atualização.");
     }
 
-    console.log('Serviço atualizado com sucesso!');
+    // console.log('Serviço atualizado com sucesso!');
     // Redireciona de volta para a página de detalhes para ver as mudanças
     res.redirect(`/detalhes/${servicoId}`);
 
@@ -213,17 +236,17 @@ router.post('/excluir/:id', authController.isAuthenticated, async (req, res, nex
 
     if (!resultado) {
       // Isso acontece se o serviço não foi encontrado ou não pertencia ao usuário
-      console.log('Tentativa de exclusão falhou. Serviço não encontrado ou não pertence ao usuário.');
+      // console.log('Tentativa de exclusão falhou. Serviço não encontrado ou não pertence ao usuário.');
       // Você pode redirecionar para a lista com uma mensagem de erro, se quiser
       return res.redirect('/servicos');
     }
 
-    console.log('Serviço excluído com sucesso!');
+    // console.log('Serviço excluído com sucesso!');
     // Após excluir, redireciona o usuário de volta para a lista de serviços.
     res.redirect('/servicos');
 
   } catch (error) {
-    console.error("Erro ao excluir o serviço:", error);
+    // console.error("Erro ao excluir o serviço:", error);
     next(error);
   }
 });

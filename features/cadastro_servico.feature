@@ -10,4 +10,4 @@ Funcionalidade: Cadastro de Serviços
     E eu preencho o formulário de serviço com dados válidos
     E eu clico no botão "Salvar"
     Então eu devo ser redirecionado para a página de serviços
-    E eu devo ver o serviço "rocada" na lista
+    E eu devo ver o serviço "Roçada" na lista

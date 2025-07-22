@@ -9,7 +9,7 @@
     "test:acceptance": "start-server-and-test start http://localhost:3311 cucumber-js",
     "test:unit": "npx jest",
     "test": "cucumber-js",
-    "test:integration": "cross-env NODE_ENV=test jest --coverage"
+    "test:integration": "cross-env NODE_ENV=test jest --coverage --runInBand"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

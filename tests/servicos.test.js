@@ -1,53 +1,217 @@
 const request = require('supertest');
 const app = require('../app');
 const Usuario = require('../models/Usuario');
+const Servico = require('../models/Servico');
+const mongoose = require('mongoose');
 
-describe('Rotas de Serviços (Protegidas)', () => {
-  let agent;
-  let testUser;
 
-  // Antes de cada teste neste arquivo, cria e loga um usuário
+describe('Rotas de Serviços (Autenticado)', () => {
+  let agent, testUser, testService;
+
   beforeEach(async () => {
-    // Cria o usuário
     testUser = new Usuario({ username: 'produtor_logado@email.com', password: 'senha123' });
     await testUser.save();
-
-    // Cria um 'agente' do Supertest que mantém os cookies (simula um navegador logado)
+    testService = new Servico({ proprietario: testUser._id, data: new Date(), talhao: 'Talhão Principal', servico_tipo: ['poda'], valor_servico: 150 });
+    await testService.save();
     agent = request.agent(app);
-
-    // Faz o login para obter o cookie de sessão
-    await agent
-      .post('/login')
-      .send({ email: 'produtor_logado@email.com', senha: 'senha123' });
+    await agent.post('/login').send({ email: 'produtor_logado@email.com', senha: 'senha123' });
   });
 
-  test('GET /servicos - Deve retornar a lista de serviços para um usuário autenticado', async () => {
-    // Usa o agente (que já está logado) para fazer a requisição
+  test('GET /servicos - Deve retornar a lista de serviços', async () => {
     const response = await agent.get('/servicos');
-
     expect(response.statusCode).toBe(200);
-    // Verifica se a página contém um texto esperado
-    expect(response.text).toContain('Nenhum serviço cadastrado ainda.');
+    expect(response.text).toContain('Talhão Principal');
   });
   
-  test('POST /adicionar-servico - Deve criar um novo serviço com sucesso', async () => {
-    const servicoData = {
-        servicos: [{
-        data: '2025-08-15',
-        talhao: 'Talhão Teste',
-        // CORREÇÃO: Usando um valor que existe no seu formulário
-        servico_tipo: ['rocada'], 
-        valor_servico: 200,
-        produtos: [],
-        trabalhadores: [{ nome: 'Trabalhador Teste' }]
-        }]
-    };
-
-    const response = await agent
-        .post('/adicionar-servico')
-        .send(servicoData);
-        
+  test('GET /adicionar-servico - Deve renderizar a página de adicionar serviço', async () => {
+    const response = await agent.get('/adicionar-servico');
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toContain('Adicionar Novos Serviços');
+  });
+  
+  test('POST /adicionar-servico - Deve criar um novo serviço com produtos', async () => {
+    const servicoData = { servicos: [{ data: '2025-08-15', talhao: 'Talhão Novo', servico_tipo: ['rocada'], valor_servico: 200, produtos: [{ nome: 'Produto Teste' }], trabalhadores: [{ nome: 'Trabalhador Teste' }] }]};
+    const response = await agent.post('/adicionar-servico').send(servicoData);
     expect(response.statusCode).toBe(302);
     expect(response.headers.location).toBe('/servicos');
+  });
+
+  test('POST /adicionar-servico - Deve criar um serviço SEM produtos ou trabalhadores', async () => {
+    const servicoData = { servicos: [{ data: '2025-08-16', talhao: 'Talhão Vazio', servico_tipo: ['limpeza'], valor_servico: 50 }]};
+    const response = await agent.post('/adicionar-servico').send(servicoData);
+    expect(response.statusCode).toBe(302);
+    const servicoCriado = await Servico.findOne({ talhao: 'Talhão Vazio' });
+    expect(servicoCriado).not.toBeNull();
+  });
+
+  test('GET /detalhes/:id - Deve mostrar detalhes de um serviço', async () => {
+    const response = await agent.get(`/detalhes/${testService._id}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toContain('Talhão Principal');
+  });
+
+  test('GET /editar/:id - Deve mostrar a página de edição', async () => {
+    const response = await agent.get(`/editar/${testService._id}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toContain('Editar Serviço');
+  });
+
+  test('POST /editar/:id - Deve atualizar um serviço', async () => {
+    const dadosAtualizados = { servicos: [{ ...testService.toObject(), talhao: 'Talhão Editado' }] };
+    const response = await agent.post(`/editar/${testService._id}`).send(dadosAtualizados);
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe(`/detalhes/${testService._id}`);
+  });
+  
+  test('POST /editar/:id - Deve atualizar com múltiplos nomes de trabalhadores', async () => {
+    const dadosAtualizados = { 
+      servicos: [{ 
+        ...testService.toObject(), 
+        trabalhadores: [{ nome: ['João', 'Maria'] }] 
+      }] 
+    };
+    const response = await agent.post(`/editar/${testService._id}`).send(dadosAtualizados);
+    expect(response.statusCode).toBe(302);
+    const servicoAtualizado = await Servico.findById(testService._id);
+    expect(servicoAtualizado.trabalhadores.length).toBe(2);
+  });
+
+  test('POST /editar/:id - Deve atualizar um serviço removendo produtos', async () => {
+    const dadosAtualizados = { servicos: [{ ...testService.toObject(), produtos: null }] };
+    const response = await agent.post(`/editar/${testService._id}`).send(dadosAtualizados);
+    expect(response.statusCode).toBe(302);
+  });
+
+  test('POST /excluir/:id - Deve excluir um serviço', async () => {
+    const response = await agent.post(`/excluir/${testService._id}`);
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/servicos');
+  });
 });
+
+
+describe('Rotas de Serviços (Não Autenticado)', () => {
+  test('GET /servicos - Deve redirecionar para /login', async () => {
+    const response = await request(app).get('/servicos');
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/login');
+  });
+  test('GET /adicionar-servico - Deve redirecionar para /login', async () => {
+    const response = await request(app).get('/adicionar-servico');
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/login');
+  });
+});
+
+
+describe('Rotas de Serviços (Cenários de Erro e Cobertura)', () => {
+  let agent, testUser;
+  
+  // Silencia o console.error ANTES de todos os testes neste bloco
+  let originalConsoleError;
+  beforeAll(() => {
+    originalConsoleError = console.error;
+    console.error = jest.fn(); // Substitui o console.error por uma função vazia
+  });
+
+  // Restaura o console.error DEPOIS de todos os testes neste bloco
+  afterAll(() => {
+    console.error = originalConsoleError;
+  });
+
+  beforeEach(async () => {
+    testUser = new Usuario({ username: 'produtor_logado@email.com', password: 'senha123' });
+    await testUser.save();
+    agent = request.agent(app);
+    await agent.post('/login').send({ email: 'produtor_logado@email.com', senha: 'senha123' });
+  });
+
+  test('GET /detalhes/:id - Deve redirecionar se o serviço não for encontrado', async () => {
+    const idInexistente = new mongoose.Types.ObjectId();
+    const response = await agent.get(`/detalhes/${idInexistente}`);
+    expect(response.statusCode).toBe(302);
+  });
+
+  test('GET /detalhes/:id - Deve lidar com erro de banco', async () => {
+    jest.spyOn(Servico, 'findOne').mockRejectedValue(new Error('Erro de banco'));
+    const response = await agent.get(`/detalhes/qualquerId`);
+    expect(response.statusCode).toBe(500);
+  });
+
+  test('GET /servicos - Deve lidar com erro de banco', async () => {
+    jest.spyOn(Servico, 'find').mockReturnValue({
+      sort: jest.fn().mockRejectedValue(new Error('Erro de banco'))
+    });
+    const response = await agent.get('/servicos');
+    expect(response.statusCode).toBe(500);
+  });
+  
+  test('POST /adicionar-servico - Deve redirecionar se o corpo for vazio', async () => {
+    const response = await agent.post('/adicionar-servico').send({});
+    expect(response.statusCode).toBe(302);
+  });
+  
+  test('POST /adicionar-servico - Deve lidar com erro de banco', async () => {
+    jest.spyOn(Servico.prototype, 'save').mockRejectedValue(new Error('Erro de banco'));
+    const servicoData = { servicos: [{ data: '2025-08-15', talhao: 'Talhão Novo', servico_tipo: ['rocada'] }]};
+    const response = await agent.post('/adicionar-servico').send(servicoData);
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/adicionar-servico?error=true');
+  });
+  
+  test('GET /editar/:id - Deve redirecionar se o serviço não for encontrado', async () => {
+    const idInexistente = new mongoose.Types.ObjectId();
+    const response = await agent.get(`/editar/${idInexistente}`);
+    expect(response.statusCode).toBe(302);
+  });
+
+  test('GET /editar/:id - Deve lidar com erro de banco', async () => {
+    jest.spyOn(Servico, 'findOne').mockRejectedValue(new Error('Erro de banco'));
+    const response = await agent.get(`/editar/qualquerId`);
+    expect(response.statusCode).toBe(500);
+  });
+
+  test('POST /editar/:id - Deve retornar 404 se o serviço não for encontrado', async () => {
+    const idInexistente = new mongoose.Types.ObjectId();
+    const response = await agent.post(`/editar/${idInexistente}`).send({ servicos: [{ talhao: 'Inexistente' }] });
+    expect(response.statusCode).toBe(404);
+  });
+  
+  test('POST /editar/:id - Deve lidar com erro de banco', async () => {
+    const service = new Servico({ proprietario: testUser._id, talhao: 'Qualquer' });
+    await service.save();
+    jest.spyOn(Servico, 'findOneAndUpdate').mockRejectedValue(new Error('Erro de banco'));
+    const response = await agent.post(`/editar/${service._id}`).send({ servicos: [{ talhao: 'Editado' }] });
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe(`/editar/${service._id}?error=true`);
+  });
+
+  test('POST /excluir/:id - Deve redirecionar se o serviço não for encontrado', async () => {
+    const idInexistente = new mongoose.Types.ObjectId();
+    const response = await agent.post(`/excluir/${idInexistente}`);
+    expect(response.statusCode).toBe(302);
+  });
+
+  test('POST /excluir/:id - Deve lidar com erro de banco', async () => {
+    const service = new Servico({ proprietario: testUser._id, talhao: 'Qualquer' });
+    await service.save();
+    jest.spyOn(Servico, 'findOneAndDelete').mockRejectedValue(new Error('Erro de banco'));
+    const response = await agent.post(`/excluir/${service._id}`);
+    expect(response.statusCode).toBe(500);
+  });
+  
+  test('POST /editar/:id - Deve lidar com array de trabalhadores malformado', async () => {
+    const service = new Servico({ proprietario: testUser._id, talhao: 'Talhão Malformado' });
+    await service.save();
+    const dadosMalformados = {
+      servicos: [{
+        ...service.toObject(),
+        trabalhadores: [null, { nome: ' ' }] // Envia um item nulo e um com nome vazio
+      }]
+    };
+    const response = await agent.post(`/editar/${service._id}`).send(dadosMalformados);
+    expect(response.statusCode).toBe(302);
+    const servicoAtualizado = await Servico.findById(service._id);
+    expect(servicoAtualizado.trabalhadores.length).toBe(0); // Garante que os inválidos foram filtrados
+  });
 });

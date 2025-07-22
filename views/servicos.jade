@@ -57,8 +57,9 @@ html(lang="pt-BR")
                 #filter-servico-checkboxes.checkboxes-container
                   .multiselect-search-wrapper
                     input.multiselect-search(type="text", placeholder="Pesquisar serviço...", onkeyup="filterOptions(this, 'filter-servico-checkboxes')", onclick="event.stopPropagation()")
-                  - var tiposServico = {rocada: 'Roçada', microterraceamento: 'Microterraceamento', pulverizacao: 'Pulverização', inseticida: 'Inseticida', fungicida: 'Fungicida'}
-                  each label, value in tiposServico
+                  
+                  //- Agora, o filtro usa o 'servicosMap' para criar a lista completa
+                  each label, value in servicosMap
                     label
                       input(type="checkbox", name="filter_servico[]", value=value, onchange="updateSelectBoxText('filter-servico-checkboxes', 'filter-servico-text', 'Todos')")
                       |  #{label}
@@ -80,19 +81,14 @@ html(lang="pt-BR")
             button.btn.btn-primary(type="submit") Aplicar Filtros
 
       .service-list
-        
         if servicos && servicos.length > 0
-          
           each servico in servicos
-            
             a(href=`/detalhes/${servico._id}`).service-card
-              
-              h3= servico.servico_tipo.join(' + ')
+              //- Aqui está a mágica: traduzimos cada tipo de serviço para seu nome bonito
+              h3= servico.servico_tipo.map(tipo => servicosMap[tipo] || tipo).join(' + ')
               p= servico.talhao
-              
               p= servico.data.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
         else
-          
           .empty-state
             span.material-symbols-outlined info
             p Nenhum serviço cadastrado ainda.

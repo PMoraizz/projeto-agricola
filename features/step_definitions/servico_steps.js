@@ -4,9 +4,11 @@ const { expect } = require('chai');
 const Servico = require('../../models/Servico');
 const Usuario = require('../../models/Usuario');
 
-// --- Passos "Dado" (Given) ---
 
 Given('que o produtor tem um serviço cadastrado com o tipo {string} no talhão {string}', async function (tipoServico, talhao) {
+
+  const tipoServicoMinusculo = tipoServico.toLowerCase().replace(/ /g, '_');
+
   const user = await Usuario.findOne({ username: this.testUser.username });
   if (!user) { throw new Error('Usuário de teste não encontrado.'); }
   
@@ -14,7 +16,7 @@ Given('que o produtor tem um serviço cadastrado com o tipo {string} no talhão 
 
   const novoServico = new Servico({
     proprietario: user._id, data: new Date(), talhao: talhao,
-    servico_tipo: [tipoServico], valor_servico: 150,
+    servico_tipo: [tipoServicoMinusculo], valor_servico: 150,
     produtos: [{ nome: 'Adubo', qtde: 10, unidade: 'kg', valor: 25 }],
     trabalhadores: [{ nome: 'José' }]
   });
@@ -22,7 +24,7 @@ Given('que o produtor tem um serviço cadastrado com o tipo {string} no talhão 
   this.servicoId = novoServico._id;
 });
 
-// --- Passos "Quando" (When) ---
+
 
 When('eu vou para a página de serviços', async function () {
   await this.driver.get('http://localhost:3000/servicos');
@@ -74,31 +76,22 @@ When('eu confirmo a exclusão', async function () {
   await confirmButton.click();
 });
 
-// --- Passos "Então" (Then) ---
 
-// ======================= ESTE PASSO FOI CORRIGIDO =======================
 Then('eu devo ver o serviço {string} na lista', async function (servicoName) {
-  const serviceListSelector = By.css('.service-list');
-  // 1. Espera a lista de serviços carregar
-  await this.driver.wait(until.elementLocated(serviceListSelector), 10000);
-  const serviceList = await this.driver.findElement(serviceListSelector);
-  
-  // 2. Espera até que um H3 com o texto (ignorando maiúsculas/minúsculas) apareça
-  // A função translate() do XPath é perfeita para isso.
-  const serviceTitleSelector = By.xpath(`//h3[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${servicoName.toLowerCase()}')]`);
-  await this.driver.wait(until.elementLocated(serviceTitleSelector), 5000);
-
-  // 3. Verificação final para garantir
+  const serviceList = await this.driver.findElement(By.css('.service-list'));
+  await this.driver.wait(until.elementTextContains(serviceList, servicoName), 5000);
   const listText = await serviceList.getText();
-  expect(listText.toLowerCase()).to.include(servicoName.toLowerCase());
+  expect(listText).to.include(servicoName);
 });
-// ======================================================================
+
 
 Then('eu não devo ver o serviço {string} na lista', async function (servicoName) {
   await this.driver.wait(until.urlContains('/servicos'), 5000);
-  const pageSource = await this.driver.getPageSource();
-  expect(pageSource.toLowerCase()).to.not.include(servicoName.toLowerCase());
+  const serviceList = await this.driver.findElement(By.css('.service-list'));
+  const listText = await serviceList.getText();
+  expect(listText).to.not.include(servicoName);
 });
+
 
 Then('eu devo estar na página de detalhes do serviço', async function () {
   await this.driver.wait(until.urlContains(`/detalhes/${this.servicoId}`), 5000);
