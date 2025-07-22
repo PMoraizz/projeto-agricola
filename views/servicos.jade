@@ -5,7 +5,7 @@ html(lang="pt-BR")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Serviços - EMATER
     
-    //- Fontes, Ícones e seu CSS principal
+    
     link(rel="preconnect", href="https://fonts.googleapis.com")
     link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
@@ -32,7 +32,7 @@ html(lang="pt-BR")
                 span.material-symbols-outlined search
                 input#filter-text(type="text", placeholder="Nome do serviço...")
             
-            //- NOVO: Filtro por Talhão adicionado
+            
             .filter-group
               label(for="filter-talhao") Talhão
               .multiselect-container
@@ -80,50 +80,26 @@ html(lang="pt-BR")
             button.btn.btn-primary(type="submit") Aplicar Filtros
 
       .service-list
-        a(href="detalhes").service-card
-          h3 Roçada 
-          p Talhao 1 + Talhao 2
-          p 05/11/2024
-        a(href="detalhes").service-card
-          h3 Roçada
-          p Sede + Cereja
-          p 07/10/2024
-        a(href="detalhes").service-card
-          h3 Roçada
-          p Talhao 3 + Sede
-          p 08/10/2024
-        a(href="detalhes").service-card
-          h3 Microterraceamento
-          p Talhao 4
-          p 09/10/2024
-        a(href="detalhes").service-card
-          h3 Inseticida
-          p Talhao 6 + Talhao 1
-          p 09/10/2024
-        a(href="detalhes").service-card
-          h3 Fungicida
-          p Todos
-          p 10/10/2024
-        a(href="detalhes").service-card
-          h3 Pulverização Nutricional 
-          p Cidreira
-          p 13/10/2024
-        a(href="detalhes").service-card
-          h3 Calagem + Preparo do Solo
-          p Talhao 1
-          p 15/10/2024
-        a(href="detalhes").service-card
-          h3 Roçada
-          p Talhao 2
-          p 15/10/2024
-        a(href="detalhes").service-card
-          h3 Roçada
-          p Talhao 7 + Cidreira
-          p 16/10/2024
         
+        if servicos && servicos.length > 0
+          
+          each servico in servicos
+            
+            a(href=`/detalhes/${servico._id}`).service-card
+              
+              h3= servico.servico_tipo.join(' + ')
+              p= servico.talhao
+              
+              p= servico.data.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+        else
+          
+          .empty-state
+            span.material-symbols-outlined info
+            p Nenhum serviço cadastrado ainda.
+            p Clique no botão '+' para adicionar seu primeiro serviço.
+      
       a.fab(href="adicionar-servico")
         span.material-symbols-outlined add
-        
       footer.bottom-nav
         a.nav-item(href="#")
           span.material-symbols-outlined shopping_cart
@@ -139,7 +115,7 @@ html(lang="pt-BR")
           span.nav-label Secagem
 
     script.
-      // --- Funções reutilizáveis para o Multi-Select ---
+      
       function toggleCheckboxes(containerId, event) {
         event.stopPropagation();
         const checkboxesContainer = document.getElementById(containerId);
@@ -192,7 +168,7 @@ html(lang="pt-BR")
         }
       });
 
-      // --- Lógica Principal da Página de Filtro ---
+      
       document.addEventListener('DOMContentLoaded', () => {
         const toggleButton = document.getElementById('filter-toggle');
         const filterContent = document.getElementById('filter-content');
@@ -230,7 +206,7 @@ html(lang="pt-BR")
           const servicoCheckboxes = document.querySelectorAll('#filter-servico-checkboxes input[type="checkbox"]:checked');
           const servicosSelecionados = Array.from(servicoCheckboxes).map(cb => normalizeString(cb.value.toLowerCase()));
 
-          // Lógica para o novo filtro de Talhão
+          
           const talhaoCheckboxes = document.querySelectorAll('#filter-talhao-checkboxes input[type="checkbox"]:checked');
           const talhoesSelecionados = Array.from(talhaoCheckboxes).map(cb => normalizeString(cb.parentElement.textContent.trim().toLowerCase()));
 
@@ -262,11 +238,11 @@ html(lang="pt-BR")
 
         clearBtn.addEventListener('click', () => {
           form.reset();
-          // Limpa filtro de serviço
+          
           document.querySelectorAll('#filter-servico-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
           updateSelectBoxText('filter-servico-checkboxes', 'filter-servico-text', 'Todos');
           
-          // Limpa filtro de talhão
+          
           document.querySelectorAll('#filter-talhao-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
           updateSelectBoxText('filter-talhao-checkboxes', 'filter-talhao-text', 'Todos');
 

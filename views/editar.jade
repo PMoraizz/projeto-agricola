@@ -4,393 +4,152 @@ html(lang="pt-BR")
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title Editar Serviço - EMATER
-
-    //- Fontes e Ícones
     link(rel="preconnect", href="https://fonts.googleapis.com")
     link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap", rel="stylesheet")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")
-
-    //- Incluindo o seu CSS existente
-    link(rel="stylesheet", href="css/style.css")
+    link(rel="stylesheet", href="/css/style.css")
 
   body
     header.app-header
-      a.icon-button(href="javascript:history.back()")
+      a.icon-button(href=`/detalhes/${servico._id}`)
         span.material-symbols-outlined arrow_back
-      img.header-logo(src="assets/logo_barra.png", alt="Logo EMATER")
+      img.header-logo(src="/assets/logo_barra.png", alt="Logo EMATER")
       div(style="width: 40px;")
 
     main.container.with-header
-      form.edit-service-form(method="POST", action="javascript:history.back()")
-        //- Bloco de informações gerais
-        .form-group
-          label(for="data") Data*
-          input.form-input(type="date", id="data", name="data", value="2025-03-01")
-
-        .form-group
-          label(for="talhao") Talhão(ões)*
-          .multiselect-container
-            .select-box(onclick="toggleCheckboxes('talhao-checkboxes-container', event)")
-              span#talhao-select-box-text.placeholder Selecione o(s) talhão(ões)
-              span.material-symbols-outlined arrow_drop_down
-            #talhao-checkboxes-container.checkboxes-container
-              .multiselect-search-wrapper
-                input.multiselect-search(type="text", placeholder="Pesquisar talhão...", onkeyup="filterOptions(this, 'talhao-checkboxes-container')", onclick="event.stopPropagation()")
-              label
-                input(type="checkbox", name="talhao[]", value="1", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Talhão 1
-              label
-                input(type="checkbox", name="talhao[]", value="2", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Talhão 2
-              label
-                input(type="checkbox", name="talhao[]", value="sede", onchange="updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)')")
-                |  Sede
-        
-        .form-group
-          label(for="servico") Serviço(s)*
-          .multiselect-container
-            .select-box(onclick="toggleCheckboxes('servico-checkboxes-container', event)")
-              span#servico-select-box-text.placeholder Selecione o(s) serviço(s)
-              span.material-symbols-outlined arrow_drop_down
-            #servico-checkboxes-container.checkboxes-container
-              .multiselect-search-wrapper
-                input.multiselect-search(type="text", placeholder="Pesquisar serviço...", onkeyup="filterOptions(this, 'servico-checkboxes-container')", onclick="event.stopPropagation()")
-              - var servicos = {rocada: 'Roçada', adubacao: 'Adubação', pulverizacao: 'Pulverização', capina: 'Capina', coiso1: 'Coiso1', coiso2: 'coiso2', coiso3: 'coiso3', coiso4: 'coiso4'}
-              each label, value in servicos
-                label
-                  input(type="checkbox", name="servico[]", value=value, onchange="updateSelectBoxText('servico-checkboxes-container', 'servico-select-box-text', 'Selecione o(s) serviço(s)')")
-                  |  #{label}
-
-        .form-group
-          label(for="valor_servico") Valor do Serviço-R$*
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", id="valor_servico", name="valor_servico", step="0.01", min="0.00", value="100.00", placeholder="R$ 0,00")
-            button.stepper-btn(type="button", data-action="increment") +
-
-        hr.form-divider
-
-        //- ===== SEÇÃO DE PRODUTOS DINÂMICOS =====
-        h3.section-title Produtos
-        #produtos-lista.repeatable-list
-          .repeatable-item
-            .repeatable-item-header
-              h4.repeatable-item-title Produto 1
-              button.remove-item-btn(type="button", title="Remover produto") &times;
+      if servico
+        form.add-service-form(method="POST", action=`/editar/${servico._id}`)
+          .servico-item(data-index="0")
+            - const dataFormatada = servico.data.toISOString().split('T')[0]
             .form-group
-              label(for="nome_produto") Nome do produto
-              input.form-input(type="text", name="produto_nome[]", value="Calcário", placeholder="Ex: Calcário")
+              label(for="data-0") Data*
+              input.form-input(type="date", id="data-0", name="servicos[0][data]", value=dataFormatada, required)
+            
             .form-group
-              label(for="qtde_produto") Quantidade
-              .input-stepper
-                button.stepper-btn(type="button", data-action="decrement") -
-                input.form-input.stepper-input(type="number", name="produto_qtde[]", value="5", placeholder="0", step="1", min="0")
-                button.stepper-btn(type="button", data-action="increment") +
+              label(for="talhao-0") Talhão*
+              select.form-input(id="talhao-0", name="servicos[0][talhao]", required)
+                option(value="", disabled) Selecione um talhão
+                - const todosTalhoes = ['Talhão 1', 'Talhão 2', 'Talhão 3', 'Talhão 4', 'Sede', 'Cereja', 'Cidreira']
+                each talhao in todosTalhoes
+                  option(value=talhao, selected=(servico.talhao === talhao))= talhao
+            
             .form-group
-              label(for="unidade_produto") Unidade
-              select.form-input(name="produto_unidade[]")
-                option(value="kg", selected) Kg
-                option(value="litro") Litro
-                option(value="unidade") Unidade
+              label(for="servico-select-box-text-0") Serviço(s)*
+              .multiselect-container
+                .select-box(onclick="toggleCheckboxes('servico-checkboxes-container-0', event)")
+                  span#servico-select-box-text-0.placeholder Selecione o(s) serviço(s)
+                  span.material-symbols-outlined arrow_drop_down
+                .checkboxes-container(id="servico-checkboxes-container-0")
+                  .multiselect-search-wrapper
+                    input.multiselect-search(type="text", placeholder="Pesquisar serviço...", onkeyup="filterOptions(this, 'servico-checkboxes-container-0')", onclick="event.stopPropagation()")
+                  - const todosServicos = { adubacao: 'Adubação', aplicacao_fungicida: 'Aplicação de Fungicida', aplicacao_herbicida: 'Aplicação de Herbicida', capinar: 'Capinar', desbarra: 'Desbarra', rocada: 'Roçada', plantio: 'Plantio', replantio: 'Replantio', poda: 'Poda', limpeza: 'Limpeza' }
+                  each label, value in todosServicos
+                    label
+                      input(type="checkbox", name="servicos[0][servico_tipo][]", value=value, checked=servico.servico_tipo.includes(value), onchange="updateSelectBoxText('servico-checkboxes-container-0', 'servico-select-box-text-0', 'Selecione o(s) serviço(s)')")
+                      | #{label}
+
             .form-group
-              label(for="valor_produto") Valor por Produto-R$
-              .input-stepper
-                button.stepper-btn(type="button", data-action="decrement") -
-                input.form-input.stepper-input(type="number", name="produto_valor[]", value="10.00", step="0.01", min="0.00", placeholder="R$ 0,00")
-                button.stepper-btn(type="button", data-action="increment") +
+              label(for="valor_servico-0") Valor do Serviço-R$*
+              input.form-input.stepper-input(type="number", id="valor_servico-0", name="servicos[0][valor_servico]", step="0.01", min="0.00", value=servico.valor_servico, required)
 
-        button#add-produto-btn.add-item-btn(type="button")
-          span.material-symbols-outlined add_circle
-          | Adicionar outro produto
+            hr.form-divider
 
-        hr.form-divider
+            h3.section-title Produtos
+            .repeatable-list#produtos-lista-0
+              if servico.produtos && servico.produtos.length > 0
+                each produto, index in servico.produtos
+                  .repeatable-item
+                    .repeatable-item-header
+                      h4.repeatable-item-title Produto #{index + 1}
+                      button.remove-item-btn(type="button") &times;
+                    .form-group
+                      label Nome do produto
+                      input.form-input(type="text", name=`servicos[0][produtos][${index}][nome]`, value=produto.nome)
+                    .form-group
+                      label Quantidade
+                      input.form-input(type="number", name=`servicos[0][produtos][${index}][qtde]`, value=produto.qtde)
+                    
+                    
+                    .form-group
+                      label Unidade
+                      select.form-input(name=`servicos[0][produtos][${index}][unidade]`)
+                        option(value="", disabled) Selecione
+                        - const todasUnidades = ["galão 5 litros", "galão 20 litros", "gramas", "h/tr", "h/roç", "Kg/ha", "Kg/200litros", "kg/canhão", "litros", "Litros calda/talhão", "Litros/200litros", "litros/canhão", "mL/100 litros", "mL/bomba", "ml", "pacote 10 gr", "pacote 1 kg"]
+                        each unidade in todasUnidades
+                          option(value=unidade, selected=(produto.unidade === unidade))= unidade
+                    
 
-        //- ===== SEÇÃO DE TRABALHADORES DINÂMICOS =====
-        h3.section-title Trabalhadores / Operadores
-        #trabalhadores-lista.repeatable-list
-          .repeatable-item
-            .repeatable-item-header
-              h4.repeatable-item-title Trabalhador 1
-              button.remove-item-btn(type="button", title="Remover trabalhador") &times;
-            .form-group
-              label(for="trabalhador") Nome do trabalhador/operador*
-              input.form-input(type="text", name="trabalhador[]", value="Célio Miguel da Silva", placeholder="Ex: Célio Miguel da Silva")
+                    .form-group
+                      label Valor por Produto-R$
+                      input.form-input(type="number", name=`servicos[0][produtos][${index}][valor]`, value=produto.valor, step="0.01")
+            
+            button.add-item-btn.add-produto-btn(type="button", data-servico-index="0")
+              span.material-symbols-outlined add_circle
+              | Adicionar outro produto
 
-        button#add-trabalhador-btn.add-item-btn(type="button")
-          span.material-symbols-outlined add_circle
-          | Adicionar novo trabalhador
+            hr.form-divider
 
-        hr.form-divider
+            h3.section-title Trabalhadores
+            .repeatable-list#trabalhadores-lista-0
+              if servico.trabalhadores && servico.trabalhadores.length > 0
+                each trabalhador, index in servico.trabalhadores
+                  .repeatable-item
+                    .repeatable-item-header
+                      h4.repeatable-item-title Trabalhador #{index + 1}
+                      button.remove-item-btn(type="button") &times;
+                    .form-group
+                      label Nome do trabalhador
+                      input.form-input(type="text", name=`servicos[0][trabalhadores][${index}][nome]`, value=trabalhador.nome)
 
-        .form-actions
-          a.btn.btn-secondary(href="detalhes") Cancelar
-          button.btn.btn-primary(type="submit") Salvar
+            button.add-item-btn.add-trabalhador-btn(type="button", data-servico-index="0")
+              span.material-symbols-outlined add_circle
+              | Adicionar novo trabalhador
 
-    //- Templates para os novos campos
+          .form-actions
+            a.btn.btn-secondary(href=`/detalhes/${servico._id}`) Cancelar
+            button.btn.btn-primary(type="submit") Salvar Alterações
+      else
+        p Serviço não encontrado.
+
     template#produto-template
       .repeatable-item
         .repeatable-item-header
           h4.repeatable-item-title Produto
-          button.remove-item-btn(type="button", title="Remover produto") &times;
+          button.remove-item-btn(type="button") &times;
         .form-group
           label Nome do produto
-          input.form-input(type="text", name="produto_nome[]", placeholder="Ex: Calcário, 18-04-17")
+          input.form-input(type="text", name="servicos[0][produtos][__INDEX__][nome]")
         .form-group
           label Quantidade
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", name="produto_qtde[]", placeholder="0", step="1", min="0")
-            button.stepper-btn(type="button", data-action="increment") +
+          input.form-input(type="number", name="servicos[0][produtos][__INDEX__][qtde]")
         .form-group
           label Unidade
-          select.form-input(name="produto_unidade[]")
-            option(value="" disabled selected) Selecione
-            option(value="kg") Kg
-            option(value="litro") Litro
-            option(value="unidade") Unidade
+          select.form-input(name="servicos[0][produtos][__INDEX__][unidade]")
+            option(value="", disabled, selected) Selecione
+            - const todasUnidades = ["galão 5 litros", "galão 20 litros", "gramas", "h/tr", "h/roç", "Kg/ha", "Kg/200litros", "kg/canhão", "litros", "Litros calda/talhão", "Litros/200litros", "litros/canhão", "mL/100 litros", "mL/bomba", "ml", "pacote 10 gr", "pacote 1 kg"]
+            each unidade in todasUnidades
+              option(value=unidade)= unidade
         .form-group
           label Valor por Produto-R$
-          .input-stepper
-            button.stepper-btn(type="button", data-action="decrement") -
-            input.form-input.stepper-input(type="number", name="produto_valor[]", step="0.01", min="0.00", placeholder="R$ 0,00")
-            button.stepper-btn(type="button", data-action="increment") +
+          input.form-input(type="number", name="servicos[0][produtos][__INDEX__][valor]", step="0.01")
 
     template#trabalhador-template
       .repeatable-item
         .repeatable-item-header
           h4.repeatable-item-title Trabalhador
-          button.remove-item-btn(type="button", title="Remover trabalhador") &times;
+          button.remove-item-btn(type="button") &times;
         .form-group
-          label Nome do trabalhador/operador*
-          input.form-input(type="text", name="trabalhador[]", placeholder="Ex: Célio Miguel da Silva")
-
+          label Nome do trabalhador
+          input.form-input(type="text", name="servicos[0][trabalhadores][__INDEX__][nome]")
+          
     script.
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- SCRIPT PARA PREENCHER DATA ATUAL ---
-            //- const dateInput = document.getElementById('data');
-            //- if (!dateInput.value) {
-            //-     const today = new Date();
-            //-     const year = today.getFullYear();
-            //-     const month = String(today.getMonth() + 1).padStart(2, '0');
-            //-     const day = String(today.getDate()).padStart(2, '0');
-            //-     dateInput.value = `${year}-${month}-${day}`;
-            //- }
-
-            // --- LÓGICA PARA ADICIONAR CAMPOS DINÂMICOS ---
-            const addProdutoBtn = document.getElementById('add-produto-btn');
-            const addTrabalhadorBtn = document.getElementById('add-trabalhador-btn');
-
-            addProdutoBtn.addEventListener('click', () => {
-                addItem('produtos-lista', 'produto-template');
-            });
-
-            addTrabalhadorBtn.addEventListener('click', () => {
-                addItem('trabalhadores-lista', 'trabalhador-template');
-            });
-        });
-
-        // --- FUNÇÃO PARA ADICIONAR UM NOVO ITEM A UMA LISTA ---
-        function addItem(listId, templateId) {
-            const template = document.getElementById(templateId);
-            const list = document.getElementById(listId);
-            const clone = template.content.cloneNode(true);
-            list.appendChild(clone);
-            updateItemTitles(listId);
-        }
-
-        // --- FUNÇÃO PARA ATUALIZAR OS TÍTULOS (Ex: Produto 1, Produto 2) ---
-        function updateItemTitles(listId) {
-            const list = document.getElementById(listId);
-            const items = list.querySelectorAll('.repeatable-item');
-            const titlePrefix = listId === 'produtos-lista' ? 'Produto' : 'Trabalhador';
-
-            items.forEach((item, index) => {
-                const titleElement = item.querySelector('.repeatable-item-title');
-                if (titleElement) {
-                    titleElement.textContent = `${titlePrefix} ${index + 1}`;
-                }
-            });
-        }
-        
-        // --- EVENTOS DE CLIQUE DELEGADOS PARA TODA A PÁGINA ---
-        document.addEventListener('click', function (e) {
-        // Lógica para os botões stepper (+/-)
-            if (e.target.matches('.stepper-btn')) {
-                const action = e.target.dataset.action;
-                const input = e.target.parentElement.querySelector('.stepper-input');
-                // (Restante do código do stepper continua igual)
-                const step = parseFloat(input.step) || 1;
-                let value = parseFloat(input.value) || 0;
-
-                if (action === 'increment') {
-                    value += step;
-                } else if (action === 'decrement') {
-                    const min = parseFloat(input.min);
-                if (!isNaN(min) && value > min) { value -= step; } 
-                else if (isNaN(min) && value > 0) { value -= step; }
-                }
-                const minVal = parseFloat(input.min);
-                if (!isNaN(minVal) && value < minVal) { value = minVal; }
-                input.value = (step < 1) ? value.toFixed(2) : value.toFixed(0);
-            }
-
-            // Lógica para remover um item da lista
-            if (e.target.matches('.remove-item-btn')) {
-                const itemToRemove = e.target.closest('.repeatable-item');
-                const list = itemToRemove.parentElement;
-                itemToRemove.remove();
-                updateItemTitles(list.id);
-            }
-        });
-
-
-        // --- SCRIPTS DO MULTI-SELECT (sem alterações) ---
-        function toggleCheckboxes(containerId, event) {
-            event.stopPropagation();
-            const checkboxesContainer = document.getElementById(containerId);
-            document.querySelectorAll('.checkboxes-container.show').forEach(openContainer => {
-                if (openContainer.id !== containerId) {
-                    openContainer.classList.remove('show');
-                }
-            });
-            checkboxesContainer.classList.toggle('show');
-        }
-
-        function updateSelectBoxText(containerId, textId, placeholderText) {
-            const selectedCheckboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
-            const selectBoxText = document.getElementById(textId);
-
-            if (selectedCheckboxes.length === 0) {
-                selectBoxText.textContent = placeholderText;
-                selectBoxText.classList.add('placeholder');
-            } else {
-                const selectedValues = [];
-                selectedCheckboxes.forEach(checkbox => {
-                selectedValues.push(checkbox.parentElement.textContent.trim());
-                });
-                selectBoxText.textContent = selectedValues.join(' + ');
-                selectBoxText.classList.remove('placeholder');
-            }
-        }
-        
-        window.addEventListener('click', function(e) {
-            let clickedInside = e.target.closest('.multiselect-container');
-            if (!clickedInside) {
-                document.querySelectorAll('.checkboxes-container.show').forEach(container => {
-                container.classList.remove('show');
-                });
-            }
-        });
-
-        function filterOptions(inputElement, containerId) {
-            const filterText = inputElement.value.toLowerCase();
-            const container = document.getElementById(containerId);
-            const labels = container.getElementsByTagName('label');
-            for (let i = 0; i < labels.length; i++) {
-                const labelText = labels[i].textContent.toLowerCase();
-                if (labelText.includes(filterText)) {
-                    labels[i].style.display = "";
-                } else {
-                    labels[i].style.display = "none";
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            function preencheDadosExistentes() {
-                const produtosExistentes = [
-                    { nome: 'Fungicida', qtde: 3, unidade: 'litro', valor: '20.00' }
-                ];
-
-                produtosExistentes.forEach(produto => {
-                    addItem('produtos-lista', 'produto-template', false, produto);
-                });
-
-                const trabalhadoresExistentes = [
-                    { nome: 'Reginaldo Miguel Portes' },
-                    { nome: 'João da Silva' }
-                ];
-
-                trabalhadoresExistentes.forEach(trabalhador => {
-                    addItem('trabalhadores-lista', 'trabalhador-template', false, trabalhador);
-                });
-
-                // --- Selecionar talhão predefinido ---
-                const talhoesSelecionados = ['1', 'sede']; // Exemplo de talhões selecionados (Talhão 1 e Talhão 2)
-                const talhaoCheckboxes = document.querySelectorAll('input[name="talhao[]"]');
-                talhaoCheckboxes.forEach(checkbox => {
-                if (talhoesSelecionados.includes(checkbox.value)) {
-                    checkbox.checked = true; // Marca o checkbox com o valor correspondente
-                }
-                });
-
-                // --- Selecionar serviços predefinidos ---
-                const servicosSelecionados = ['rocada', 'adubacao']; // Exemplos de serviços selecionados (agora com os valores dos checkboxes)
-                const servicoCheckboxes = document.querySelectorAll('input[name="servico[]"]');
-                servicoCheckboxes.forEach(checkbox => {
-                if (servicosSelecionados.includes(checkbox.value)) {
-                    checkbox.checked = true; // Marca o checkbox com o valor correspondente
-                }
-                });
-
-                // Atualiza os textos do seletor de talhão e serviços (caso haja modificações visuais)
-                updateSelectBoxText('talhao-checkboxes-container', 'talhao-select-box-text', 'Selecione o(s) talhão(ões)');
-                updateSelectBoxText('servico-checkboxes-container', 'servico-select-box-text', 'Selecione o(s) serviço(s)');
-            
-            }
-            preencheDadosExistentes();
-        });
-
-        function addItem(listId, templateId, isUserAdd, dados = null) {
-            const template = document.getElementById(templateId);
-            const list = document.getElementById(listId);
-            const clone = template.content.cloneNode(true);
-
-            if (listId === 'produtos-lista' && !isUserAdd) {
-                const produtoNome = clone.querySelector('input[name="produto_nome[]"]');
-                const produtoQtde = clone.querySelector('input[name="produto_qtde[]"]');
-                const produtoUnidade = clone.querySelector('select[name="produto_unidade[]"]');
-                const produtoValor = clone.querySelector('input[name="produto_valor[]"]');
-                
-                if (dados) {
-                    produtoNome.value = dados.nome;
-                    produtoQtde.value = dados.qtde;
-                    produtoUnidade.value = dados.unidade;
-                    produtoValor.value = dados.valor;
-                }
-            }
-
-            if (listId === 'trabalhadores-lista' && !isUserAdd) {
-                const trabalhadorNome = clone.querySelector('input[name="trabalhador[]"]');
-                
-                if (dados) {
-                trabalhadorNome.value = dados.nome;
-                }
-            }
-
-            if (isUserAdd) {
-                const inputs = clone.querySelectorAll('input, select');
-                inputs.forEach(input => input.value = '');
-            }
-
-            list.appendChild(clone);
-            updateItemTitles(listId);
-        }
-
-
-        // --- FUNÇÃO PARA ATUALIZAR OS TÍTULOS (Ex: Produto 1, Produto 2) --- 
-        function updateItemTitles(listId) {
-            const list = document.getElementById(listId);
-            const items = list.querySelectorAll('.repeatable-item');
-            const titlePrefix = listId === 'produtos-lista' ? 'Produto' : 'Trabalhador';
-
-            items.forEach((item, index) => {
-                const titleElement = item.querySelector('.repeatable-item-title');
-                if (titleElement) {
-                titleElement.textContent = `${titlePrefix} ${index + 1}`;
-                }
-            });
-        }
-
-      
+      function toggleCheckboxes(containerId, event) { event.stopPropagation(); const checkboxesContainer=document.getElementById(containerId); document.querySelectorAll('.checkboxes-container.show').forEach(openContainer=>{ if (openContainer.id !==containerId) { openContainer.classList.remove('show'); } }); checkboxesContainer.classList.toggle('show'); }
+      function updateSelectBoxText(containerId, textId, placeholderText) { const selectedCheckboxes=document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`); const selectBoxText=document.getElementById(textId); if (selectedCheckboxes.length===0) { selectBoxText.textContent=placeholderText; selectBoxText.classList.remove('placeholder-filled'); } else { const selectedValues=Array.from(selectedCheckboxes).map(cb=>cb.parentElement.textContent.trim()); selectBoxText.textContent=selectedValues.join(' + '); selectBoxText.classList.add('placeholder-filled'); } }
+      function filterOptions(inputElement, containerId) { const filterText=inputElement.value.toLowerCase(); const container=document.getElementById(containerId); const labels=container.getElementsByTagName('label'); for (let i=0; i < labels.length; i++) { const labelText=labels[i].textContent.toLowerCase(); labels[i].style.display=labelText.includes(filterText) ? "" : "none"; } }
+      window.addEventListener('click', function(e) { if (!e.target.closest('.multiselect-container')) { document.querySelectorAll('.checkboxes-container.show').forEach(c=>c.classList.remove('show')); } });
+      document.addEventListener('DOMContentLoaded', ()=>{ updateSelectBoxText('servico-checkboxes-container-0', 'servico-select-box-text-0', 'Selecione o(s) serviço(s)'); function updateFieldNames(container) { const servicoIndex=container.closest('.servico-item').dataset.index || 0; const items=container.querySelectorAll('.repeatable-item'); const type=container.id.includes('produtos') ? 'produtos' : 'trabalhadores'; items.forEach((item, itemIndex)=>{ item.querySelector('.repeatable-item-title').textContent=`${type==='produtos' ? 'Produto' : 'Trabalhador'} ${itemIndex + 1}`; item.querySelectorAll('input, select').forEach(input=>{ const baseName=input.getAttribute('name').match(/\[(\w+)\]$/)[1]; input.setAttribute('name', `servicos[${servicoIndex}][${type}][${itemIndex}][${baseName}]`); }); }); }
+      function addItem(listId, templateId) { const list=document.getElementById(listId); const template=document.getElementById(templateId); const clone=template.content.cloneNode(true); list.appendChild(clone); updateFieldNames(list); }
+      document.querySelector('main').addEventListener('click', e=>{ if (e.target.matches('.add-produto-btn')) { const servicoIndex=e.target.dataset.servicoIndex; addItem(`produtos-lista-${servicoIndex}`, 'produto-template'); }
+      if (e.target.matches('.add-trabalhador-btn')) { const servicoIndex=e.target.dataset.servicoIndex; addItem(`trabalhadores-lista-${servicoIndex}`, 'trabalhador-template'); }
+      if (e.target.matches('.remove-item-btn')) { const item=e.target.closest('.repeatable-item'); const list=item.parentElement; item.remove(); updateFieldNames(list); } }); });

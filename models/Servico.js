@@ -14,6 +14,11 @@ const trabalhadorSchema = new mongoose.Schema({
 });
 
 const servicoSchema = new mongoose.Schema({
+    proprietario: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: true
+  },
   data: Date,
   talhao: String,
   servico_tipo: [String],
