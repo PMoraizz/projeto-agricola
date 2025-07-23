@@ -15,8 +15,9 @@ O sistema foi construído com foco em uma experiência de usuário simples e dir
 -   **Autenticação de Usuários**: Sistema seguro de registro e login para produtores.
 -   **Gestão de Serviços (CRUD)**: Funcionalidades completas de cadastro, visualização, edição e exclusão de serviços.
 -   **Testes Automatizados**: O projeto conta com uma suíte completa de testes, incluindo:
-    -   **Testes de Aceitação (BDD)** com Cucumber para validar o comportamento do sistema sob a perspectiva do usuário.
-    -   **Testes de Integração** com Jest e Supertest para garantir a robustez e o correto funcionamento das rotas da API.
+    -   **Testes de Aceitação (BDD)** com Cucumber para validar o comportamento do sistema sob a perspectiva do usuário final.
+    -   **Testes de Integração** com Jest para garantir a robustez das rotas da API e sua interação com o banco de dados.
+    -   **Testes Unitários** com Jest para validar as menores unidades de código (Models) de forma isolada.
 
 ---
 
@@ -28,7 +29,7 @@ O sistema foi construído com foco em uma experiência de usuário simples e dir
 -   **Autenticação**: `express-session`, `bcrypt`, `connect-flash`
 -   **Testes**:
     -   **Aceitação**: Cucumber, Selenium WebDriver, Chai
-    -   **Integração**: Jest, Supertest
+    -   **Integração e Unitários**: Jest, Supertest, MongoDB-Memory-Server
 
 ---
 
@@ -77,32 +78,40 @@ A aplicação estará disponível em `http://localhost:3000`.
 
 ## Como Rodar os Testes
 
-O projeto possui dois tipos de testes automatizados. Ambos rodam em um ambiente isolado e utilizam um banco de dados separado chamado `agricola_teste`.
+O projeto possui três tipos de testes automatizados. Os testes de integração e unitários utilizam um banco de dados em memória ou um banco de teste (`agricola_teste`), garantindo que seus dados de desenvolvimento não sejam afetados.
 
-### 1. Testes de Integração (Jest)
+### 1. Testes Unitários (Jest)
 
-Estes testes verificam as rotas da API diretamente, garantindo a lógica do backend. **São mais rápidos e ideais para verificações frequentes durante o desenvolvimento.**
+Estes são os testes mais rápidos. Eles validam a lógica interna dos Models de forma isolada.
 
-1.  **Pré-requisito**: Certifique-se de que o MongoDB esteja rodando localmente.
-2.  Execute o seguinte comando no terminal:
+-   **Pré-requisito**: Nenhum (não precisa do MongoDB rodando).
+-   **Comando**:
+    ```bash
+    npm run test:unit
+    ```
+
+### 2. Testes de Integração (Jest)
+
+Estes testes verificam as rotas da API diretamente para garantir a lógica do backend.
+
+-   **Pré-requisito**: Certifique-se de que o MongoDB esteja rodando localmente.
+-   **Comando**:
     ```bash
     npm run test:integration
     ```
-    O Jest executará todos os testes de integração e exibirá um relatório de cobertura de código no final.
+    O Jest executará os testes e exibirá um relatório de cobertura de código no final.
 
-### 2. Testes de Aceitação (Cucumber)
+### 3. Testes de Aceitação (Cucumber)
 
-Estes testes simulam o comportamento real de um usuário no navegador.
+Estes testes simulam o comportamento real de um usuário no navegador. **Este processo requer dois terminais.**
 
-1.  **Terminal 1: Iniciar o Servidor em Modo de Teste**
-    Execute o comando abaixo para iniciar a aplicação conectada ao banco de dados de teste:
+-   **Terminal 1: Iniciar o Servidor em Modo de Teste**
     ```bash
     npm run start:test
     ```
     Mantenha este terminal rodando.
 
-2.  **Terminal 2: Executar os Testes**
-    Com o servidor de teste rodando, execute o Cucumber no segundo terminal:
+-   **Terminal 2: Executar os Testes**
     ```bash
     npm test
     ```
