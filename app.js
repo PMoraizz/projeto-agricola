@@ -20,15 +20,26 @@ var app = express();
 //   console.error('Erro ao conectar ao MongoDB:', err);
 // });
 
-let dbConnectionString = process.env.MONGO_URL;
+// let dbConnectionString = process.env.MONGO_URL;
 
-if (!dbConnectionString) {
-  console.log('Variável MONGO_URL não encontrada. Usando conexão local...');
-  const isTestEnvironment = process.env.NODE_ENV === 'test';
-  dbConnectionString = isTestEnvironment 
-    ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
-    : 'mongodb://localhost:27017/agricola';      // Banco para desenvolvimento local
-}
+// if (!dbConnectionString) {
+//   console.log('Variável MONGO_URL não encontrada. Usando conexão local...');
+//   const isTestEnvironment = process.env.NODE_ENV === 'test';
+//   dbConnectionString = isTestEnvironment 
+//     ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
+//     : 'mongodb://localhost:27017/agricola';      // Banco para desenvolvimento local
+// }
+
+// mongoose.connect(dbConnectionString).then(() => {
+//   console.log(`Conectado ao MongoDB com sucesso!`);
+// }).catch((err) => {
+//   console.error('Erro ao conectar ao MongoDB:', err);
+// });
+
+const dbConnectionString = process.env.MONGO_URI || // 1. Usa a URI do teste global se existir
+  (process.env.NODE_ENV === 'test' 
+    ? 'mongodb://localhost:27017/agricola_teste' // 2. Fallback para os testes de integração
+    : 'mongodb://localhost:27017/agricola');      // 3. Conexão padrão de desenvolvimento
 
 mongoose.connect(dbConnectionString).then(() => {
   console.log(`Conectado ao MongoDB com sucesso!`);
