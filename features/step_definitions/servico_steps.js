@@ -51,6 +51,10 @@ When('eu preencho o formulário de serviço com dados válidos', {timeout: 20 * 
   const checkbox = await checkboxContainer.findElement(By.xpath("//label[contains(., 'Roçada')]/input"));
   await checkbox.click();
   await selectBox.click();
+
+  // CORREÇÃO: Adicionamos o preenchimento do campo de valor obrigatório
+  const valorInput = await this.driver.findElement(By.id('valor_servico-0'));
+  await valorInput.sendKeys('123.45');
   
   const addTrabalhadorBtn = await this.driver.findElement(By.css('.add-trabalhador-btn'));
   await addTrabalhadorBtn.click();

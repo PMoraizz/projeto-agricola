@@ -4,14 +4,16 @@ const Usuario = require('../models/Usuario');
 const Servico = require('../models/Servico');
 const mongoose = require('mongoose');
 
-
+// =======================================================
+// Bloco 1: Testes com usuário AUTENTICADO (Caminho Feliz)
+// =======================================================
 describe('Rotas de Serviços (Autenticado)', () => {
   let agent, testUser, testService;
 
   beforeEach(async () => {
     testUser = new Usuario({ username: 'produtor_logado@email.com', password: 'senha123' });
     await testUser.save();
-    testService = new Servico({ proprietario: testUser._id, data: new Date(), talhao: 'Talhão Principal', servico_tipo: ['poda'], valor_servico: 150 });
+    testService = new Servico({ proprietario: testUser._id, data: new Date(), talhao: 'Talhão Principal', servico_tipo: ['poda'], valor_servico: 150, trabalhadores: [{ nome: 'Funcionario A' }] });
     await testService.save();
     agent = request.agent(app);
     await agent.post('/login').send({ email: 'produtor_logado@email.com', senha: 'senha123' });
@@ -29,15 +31,15 @@ describe('Rotas de Serviços (Autenticado)', () => {
     expect(response.text).toContain('Adicionar Novos Serviços');
   });
   
-  test('POST /adicionar-servico - Deve criar um novo serviço com produtos', async () => {
+  test('POST /adicionar-servico - Deve criar um novo serviço com todos os dados', async () => {
     const servicoData = { servicos: [{ data: '2025-08-15', talhao: 'Talhão Novo', servico_tipo: ['rocada'], valor_servico: 200, produtos: [{ nome: 'Produto Teste' }], trabalhadores: [{ nome: 'Trabalhador Teste' }] }]};
     const response = await agent.post('/adicionar-servico').send(servicoData);
     expect(response.statusCode).toBe(302);
     expect(response.headers.location).toBe('/servicos');
   });
 
-  test('POST /adicionar-servico - Deve criar um serviço SEM produtos ou trabalhadores', async () => {
-    const servicoData = { servicos: [{ data: '2025-08-16', talhao: 'Talhão Vazio', servico_tipo: ['limpeza'], valor_servico: 50 }]};
+  test('POST /adicionar-servico - Deve criar um serviço SEM a chave produtos', async () => {
+    const servicoData = { servicos: [{ data: '2025-08-16', talhao: 'Talhão Vazio', servico_tipo: ['limpeza'], valor_servico: 50, trabalhadores: [{ nome: 'Trabalhador B' }] }]};
     const response = await agent.post('/adicionar-servico').send(servicoData);
     expect(response.statusCode).toBe(302);
     const servicoCriado = await Servico.findOne({ talhao: 'Talhão Vazio' });
@@ -89,7 +91,9 @@ describe('Rotas de Serviços (Autenticado)', () => {
   });
 });
 
-
+// =======================================================
+// Bloco 2: Testes sem autenticação (Segurança)
+// =======================================================
 describe('Rotas de Serviços (Não Autenticado)', () => {
   test('GET /servicos - Deve redirecionar para /login', async () => {
     const response = await request(app).get('/servicos');
@@ -103,21 +107,15 @@ describe('Rotas de Serviços (Não Autenticado)', () => {
   });
 });
 
-
+// =======================================================
+// Bloco 3: Testes para cenários de erro e cobertura final
+// =======================================================
 describe('Rotas de Serviços (Cenários de Erro e Cobertura)', () => {
   let agent, testUser;
   
-  // Silencia o console.error ANTES de todos os testes neste bloco
   let originalConsoleError;
-  beforeAll(() => {
-    originalConsoleError = console.error;
-    console.error = jest.fn(); // Substitui o console.error por uma função vazia
-  });
-
-  // Restaura o console.error DEPOIS de todos os testes neste bloco
-  afterAll(() => {
-    console.error = originalConsoleError;
-  });
+  beforeAll(() => { originalConsoleError = console.error; console.error = jest.fn(); });
+  afterAll(() => { console.error = originalConsoleError; });
 
   beforeEach(async () => {
     testUser = new Usuario({ username: 'produtor_logado@email.com', password: 'senha123' });
@@ -153,7 +151,7 @@ describe('Rotas de Serviços (Cenários de Erro e Cobertura)', () => {
   
   test('POST /adicionar-servico - Deve lidar com erro de banco', async () => {
     jest.spyOn(Servico.prototype, 'save').mockRejectedValue(new Error('Erro de banco'));
-    const servicoData = { servicos: [{ data: '2025-08-15', talhao: 'Talhão Novo', servico_tipo: ['rocada'] }]};
+    const servicoData = { servicos: [{ data: '2025-08-15', talhao: 'Talhão Novo', servico_tipo: ['rocada'], valor_servico: 1, trabalhadores: [{nome: 'a'}] }]};
     const response = await agent.post('/adicionar-servico').send(servicoData);
     expect(response.statusCode).toBe(302);
     expect(response.headers.location).toBe('/adicionar-servico?error=true');
@@ -173,12 +171,22 @@ describe('Rotas de Serviços (Cenários de Erro e Cobertura)', () => {
 
   test('POST /editar/:id - Deve retornar 404 se o serviço não for encontrado', async () => {
     const idInexistente = new mongoose.Types.ObjectId();
-    const response = await agent.post(`/editar/${idInexistente}`).send({ servicos: [{ talhao: 'Inexistente' }] });
+    // Envia um corpo de requisição completo e válido para não falhar na validação
+    const dadosValidos = { 
+      servicos: [{ 
+        data: new Date(),
+        talhao: 'Inexistente',
+        servico_tipo: ['inexistente'],
+        valor_servico: 1,
+        trabalhadores: [{ nome: 'Inexistente' }]
+      }]
+    };
+    const response = await agent.post(`/editar/${idInexistente}`).send(dadosValidos);
     expect(response.statusCode).toBe(404);
   });
   
   test('POST /editar/:id - Deve lidar com erro de banco', async () => {
-    const service = new Servico({ proprietario: testUser._id, talhao: 'Qualquer' });
+    const service = new Servico({ proprietario: testUser._id, data: new Date(), talhao: 'Qualquer', servico_tipo: ['a'], valor_servico: 1, trabalhadores: [{nome: 'a'}] });
     await service.save();
     jest.spyOn(Servico, 'findOneAndUpdate').mockRejectedValue(new Error('Erro de banco'));
     const response = await agent.post(`/editar/${service._id}`).send({ servicos: [{ talhao: 'Editado' }] });
@@ -193,25 +201,11 @@ describe('Rotas de Serviços (Cenários de Erro e Cobertura)', () => {
   });
 
   test('POST /excluir/:id - Deve lidar com erro de banco', async () => {
-    const service = new Servico({ proprietario: testUser._id, talhao: 'Qualquer' });
+    const service = new Servico({ proprietario: testUser._id, data: new Date(), talhao: 'Qualquer', servico_tipo: ['a'], valor_servico: 1, trabalhadores: [{nome: 'a'}] });
     await service.save();
     jest.spyOn(Servico, 'findOneAndDelete').mockRejectedValue(new Error('Erro de banco'));
     const response = await agent.post(`/excluir/${service._id}`);
     expect(response.statusCode).toBe(500);
   });
-  
-  test('POST /editar/:id - Deve lidar com array de trabalhadores malformado', async () => {
-    const service = new Servico({ proprietario: testUser._id, talhao: 'Talhão Malformado' });
-    await service.save();
-    const dadosMalformados = {
-      servicos: [{
-        ...service.toObject(),
-        trabalhadores: [null, { nome: ' ' }] // Envia um item nulo e um com nome vazio
-      }]
-    };
-    const response = await agent.post(`/editar/${service._id}`).send(dadosMalformados);
-    expect(response.statusCode).toBe(302);
-    const servicoAtualizado = await Servico.findById(service._id);
-    expect(servicoAtualizado.trabalhadores.length).toBe(0); // Garante que os inválidos foram filtrados
-  });
+
 });

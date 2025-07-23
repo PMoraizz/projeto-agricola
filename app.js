@@ -3,62 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session'); // 1. Importe o express-session
+var session = require('express-session');
 var flash = require('connect-flash');
-var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-//Quando usar Docker fazer isso
-// mongoose.connect('mongodb://admin:senha123@localhost:27277/agricola?authSource=admin', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// }).then(() => {
-//   console.log('Conectado ao MongoDB!');
-// }).catch((err) => {
-//   console.error('Erro ao conectar ao MongoDB:', err);
-// });
-
-// let dbConnectionString = process.env.MONGO_URL;
-
-// if (!dbConnectionString) {
-//   console.log('Variável MONGO_URL não encontrada. Usando conexão local...');
-//   const isTestEnvironment = process.env.NODE_ENV === 'test';
-//   dbConnectionString = isTestEnvironment 
-//     ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
-//     : 'mongodb://localhost:27017/agricola';      // Banco para desenvolvimento local
-// }
-
-// mongoose.connect(dbConnectionString).then(() => {
-//   console.log(`Conectado ao MongoDB com sucesso!`);
-// }).catch((err) => {
-//   console.error('Erro ao conectar ao MongoDB:', err);
-// });
-
-const dbConnectionString = process.env.MONGO_URI || // 1. Usa a URI do teste global se existir
-  (process.env.NODE_ENV === 'test' 
-    ? 'mongodb://localhost:27017/agricola_teste' // 2. Fallback para os testes de integração
-    : 'mongodb://localhost:27017/agricola');      // 3. Conexão padrão de desenvolvimento
-
-mongoose.connect(dbConnectionString).then(() => {
-  console.log(`Conectado ao MongoDB com sucesso!`);
-}).catch((err) => {
-  console.error('Erro ao conectar ao MongoDB:', err);
-});
-
-
-
-// const isTestEnvironment = process.env.NODE_ENV === 'test';
-// const dbConnectionString = isTestEnvironment 
-//   ? 'mongodb://localhost:27017/agricola_teste' // Banco para testes
-//   : 'mongodb://localhost:27017/agricola'; 
-  
-// mongoose.connect(dbConnectionString).then(() => {
-//   console.log(`Conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
-// }).catch((err) => {
-//   console.error('Erro ao conectar ao MongoDB:', err);
-// });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -70,13 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2. Configure o middleware de sessão
-//    IMPORTANTE: O 'secret' deve ser uma string longa e aleatória em produção.
 app.use(session({
-  secret: 'seu-segredo-super-secreto-aqui', // Troque por uma chave segura
+  secret: 'seu-segredo-super-secreto-aqui',
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // Em produção, com HTTPS, use { secure: true }
+  cookie: { secure: false }
 }));
 
 app.use(flash());
@@ -91,11 +39,8 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });

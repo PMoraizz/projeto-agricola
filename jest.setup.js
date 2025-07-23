@@ -1,38 +1,31 @@
-// const mongoose = require('mongoose');
-// const Usuario = require('./models/Usuario');
-// const Servico = require('./models/Servico');
-
-// // Antes de todos os testes, conecta ao banco
-// beforeAll(async () => {
-//   const dbConnectionString = 'mongodb://localhost:27017/agricola_teste';
-//   await mongoose.connect(dbConnectionString);
-// });
-
-// // Antes de CADA teste, limpa as coleções
-// beforeEach(async () => {
-//   await Usuario.deleteMany({});
-//   await Servico.deleteMany({});
-// });
-
-// // DEPOIS de CADA teste, restaura todos os mocks (simulações de erro)
-// afterEach(() => {
-//   jest.restoreAllMocks();
-// });
-
-// // Depois de todos os testes, desconecta do banco
-// afterAll(async () => {
-//   await mongoose.connection.close();
-// });
-
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// Conecta ao banco ANTES que os testes comecem
+let mongoServer;
+
+// Antes de TODOS os testes, inicia o banco em memória e conecta o Mongoose a ele
 beforeAll(async () => {
-  const uri = process.env.MONGO_URI_UNIT_TESTS;
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
   await mongoose.connect(uri);
 });
 
-// Desconecta DEPOIS que todos os testes terminarem
+// Depois de TODOS os testes, desconecta e para o banco
 afterAll(async () => {
   await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+// Antes de CADA teste individual, limpa todas as coleções do banco
+beforeEach(async () => {
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
+});
+
+// DEPOIS de CADA teste individual, restaura todos os mocks
+// ESTA É A LINHA MAIS IMPORTANTE QUE FALTAVA
+afterEach(() => {
+  jest.restoreAllMocks();
 });
