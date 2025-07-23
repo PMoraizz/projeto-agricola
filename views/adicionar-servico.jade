@@ -31,11 +31,11 @@ html(lang="pt-BR")
 
             .form-group
               label(for="data-0") Data*
-              input.form-input(type="date", id="data-0", name="servicos[0][data]")
+              input.form-input(type="date", id="data-0", name="servicos[0][data]", required)
             
             .form-group
               label(for="talhao-0") Talhão*
-              select.form-input(id="talhao-0", name="servicos[0][talhao]")
+              select.form-input(id="talhao-0", name="servicos[0][talhao]", required)
                 option(value="", disabled, selected) Selecione um talhão
                 option(value="Talhão 1") Talhão 1
                 option(value="Talhão 2") Talhão 2
@@ -81,7 +81,7 @@ html(lang="pt-BR")
               label(for="valor_servico-0") Valor do Serviço-R$*
               .input-stepper
                 button.stepper-btn(type="button", data-action="decrement") -
-                input.form-input.stepper-input(type="number", id="valor_servico-0", name="servicos[0][valor_servico]", step="0.01", min="0.00", placeholder="R$ 0,00")
+                input.form-input.stepper-input(type="number", id="valor_servico-0", name="servicos[0][valor_servico]", step="0.01", min="0.00", placeholder="R$ 0,00", required)
                 button.stepper-btn(type="button", data-action="increment") +
 
             hr.form-divider
@@ -142,7 +142,7 @@ html(lang="pt-BR")
                   button.remove-item-btn(type="button", title="Remover trabalhador") &times;
                 .form-group
                   label(for="trabalhador_nome-0-0") Nome do trabalhador/operador*
-                  input.form-input(type="text", id="trabalhador_nome-0-0", name="servicos[0][trabalhadores][0][nome]", placeholder="Ex: Célio Miguel da Silva")
+                  input.form-input(type="text", id="trabalhador_nome-0-0", name="servicos[0][trabalhadores][0][nome]", placeholder="Ex: Célio Miguel da Silva", required)
             button.add-item-btn.add-trabalhador-btn(type="button")
               span.material-symbols-outlined add_circle
               | Adicionar novo trabalhador
@@ -163,3 +163,44 @@ html(lang="pt-BR")
           button#modal-btn-confirm.btn.btn-danger Confirmar
 
     script(src="/js/adicionar-servico.js")
+    //- ADICIONADO: Script para validação do campo de serviços
+    script.
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('.add-service-form');
+        if (form) {
+          form.addEventListener('submit', function(event) {
+            const servicoItems = document.querySelectorAll('.servico-item');
+            let allValid = true;
+
+            servicoItems.forEach((item, index) => {
+              const serviceCheckboxes = item.querySelectorAll(`input[name^="servicos[${index}][servico_tipo]"]`);
+              const isAnyChecked = Array.from(serviceCheckboxes).some(checkbox => checkbox.checked);
+              
+              const multiselectContainer = item.querySelector(`#servico-checkboxes-container-${index}`).closest('.multiselect-container');
+              let errorMsg = multiselectContainer.querySelector('.validation-error');
+
+              if (!isAnyChecked) {
+                allValid = false;
+                if (!errorMsg) {
+                  errorMsg = document.createElement('div');
+                  errorMsg.className = 'validation-error';
+                  errorMsg.style.color = 'red';
+                  errorMsg.style.fontSize = '0.875rem';
+                  errorMsg.style.marginTop = '4px';
+                  multiselectContainer.appendChild(errorMsg);
+                }
+                errorMsg.textContent = 'Por favor, selecione pelo menos um serviço.';
+              } else {
+                if (errorMsg) {
+                  errorMsg.textContent = '';
+                }
+              }
+            });
+
+            if (!allValid) {
+              event.preventDefault(); // Impede o envio do formulário se algum bloco for inválido
+            }
+          });
+        }
+      });
+
