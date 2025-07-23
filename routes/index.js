@@ -88,7 +88,9 @@ router.get('/detalhes/:id', authController.isAuthenticated, async (req, res, nex
   try {
     const servico = await Servico.findOne({ _id: req.params.id, proprietario: req.session.userId });
     if (!servico) return res.redirect('/servicos');
-    res.render('detalhes', { servico });
+    
+    res.render('detalhes', { servico: servico, servicosMap: servicosMap });
+
   } catch (error) {
     next(error);
   }

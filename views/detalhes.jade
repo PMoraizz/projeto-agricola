@@ -30,7 +30,7 @@ html(lang="pt-BR")
             ul.repeatable-list 
               each tipo in servico.servico_tipo
                 li.repeatable-item
-                  span.repeatable-item-text= tipo
+                  span.repeatable-item-text= servicosMap[tipo] || tipo
 
           .detail-section
             h3 Talhão
@@ -42,6 +42,10 @@ html(lang="pt-BR")
             h3 Data do Serviço
             
             p= servico.data.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+
+          .detail-section
+            h3 Valor do Serviço
+            p= `R$ ${servico.valor_servico.toFixed(2).replace('.', ',')}`
 
           
           if servico.produtos && servico.produtos.length > 0
