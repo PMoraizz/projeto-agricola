@@ -4,20 +4,33 @@ var debug = require('debug')('exemplodeploy:server');
 var http = require('http');
 var mongoose = require('mongoose'); // Importe o mongoose aqui
 
-// --- INÍCIO DA CORREÇÃO ---
-// Lógica de conexão movida para cá
-const isTestEnvironment = process.env.NODE_ENV === 'test';
-const dbConnectionString = isTestEnvironment 
-  ? 'mongodb://localhost:27017/agricola_teste'
-  : 'mongodb://localhost:27017/agricola';
+// // --- INÍCIO DA CORREÇÃO ---
+// // Lógica de conexão movida para cá
+// const isTestEnvironment = process.env.NODE_ENV === 'test';
+// const dbConnectionString = isTestEnvironment 
+//   ? 'mongodb://localhost:27017/agricola_teste'
+//   : 'mongodb://localhost:27017/agricola';
 
+// mongoose.connect(dbConnectionString).then(() => {
+//   console.log(`Servidor conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
+// }).catch((err) => {
+//   console.error('Erro ao conectar ao MongoDB:', err);
+//   process.exit(1); // Encerra a aplicação se não conseguir conectar
+// });
+// // --- FIM DA CORREÇÃO ---
+
+const dbConnectionString = process.env.MONGO_URL || 
+  (process.env.NODE_ENV === 'test' 
+    ? 'mongodb://localhost:27017/agricola_teste'      // 2. Fallback para testes locais (npm run test:integration)
+    : 'mongodb://localhost:27017/agricola');      // 3. Fallback para desenvolvimento local (npm start)
+
+// Conecta ao banco de dados usando a string definida
 mongoose.connect(dbConnectionString).then(() => {
-  console.log(`Servidor conectado ao MongoDB em modo: ${isTestEnvironment ? 'TESTE' : 'Desenvolvimento'}`);
+  console.log(`Servidor conectado ao MongoDB com sucesso!`);
 }).catch((err) => {
   console.error('Erro ao conectar ao MongoDB:', err);
   process.exit(1); // Encerra a aplicação se não conseguir conectar
 });
-// --- FIM DA CORREÇÃO ---
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);

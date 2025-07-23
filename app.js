@@ -7,8 +7,23 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+// var mongoose = require('mongoose');
 
 var app = express();
+
+// const dbConnectionString = process.env.MONGO_URL || 
+//   (process.env.NODE_ENV === 'test' 
+//     ? 'mongodb://localhost:27017/agricola_teste'      // 2. Fallback para testes locais
+//     : 'mongodb://localhost:27017/agricola');      // 3. Fallback para desenvolvimento local
+
+// // Conecta ao banco de dados usando a string definida
+// mongoose.connect(dbConnectionString).then(() => {
+//   console.log(`Servidor conectado ao MongoDB com sucesso!`);
+// }).catch((err) => {
+//   console.error('Erro ao conectar ao MongoDB:', err);
+//   process.exit(1); // Encerra a aplicação se não conseguir conectar
+// });
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
