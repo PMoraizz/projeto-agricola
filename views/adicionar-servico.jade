@@ -126,7 +126,7 @@ html(lang="pt-BR")
                   label(for="produto_valor-0-0") Valor por Produto-R$
                   .input-stepper
                     button.stepper-btn(type="button", data-action="decrement") -
-                    input.form-input.stepper-input(type="number", id="produto_valor-0-0", name="servicos[0][produtos][0][valor]", step="0.01", min="0.00", placeholder="R$ 0,00")
+                    input.form-input.stepper-input(type="number", id="produto_valor-0-0", name="servicos[0][produtos][0][valor]", step="0.01", min="0.00", placeholder="R$ 0,00" required)
                     button.stepper-btn(type="button", data-action="increment") +
             button.add-item-btn.add-produto-btn(type="button")
               span.material-symbols-outlined add_circle

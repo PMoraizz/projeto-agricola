@@ -82,7 +82,7 @@ html(lang="pt-BR")
 
                     .form-group
                       label Valor por Produto-R$
-                      input.form-input(type="number", name=`servicos[0][produtos][${index}][valor]`, value=produto.valor, step="0.01")
+                      input.form-input(type="number", name=`servicos[0][produtos][${index}][valor]`, value=produto.valor, step="0.01", required)
             
             button.add-item-btn.add-produto-btn(type="button", data-servico-index="0")
               span.material-symbols-outlined add_circle
